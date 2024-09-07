@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "amonite_mathorga"
+name = "amonite"
 version = "0.0.1"
 authors = [
   { name = "Luka Micheletti", email = "michelettiluka@gmail.com" },
@@ -13,10 +13,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GPL License",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
 [project.urls]
 Homepage = "https://github.com/Mathorga/amonite"
 Issues = "https://github.com/Mathorga/amonite/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
