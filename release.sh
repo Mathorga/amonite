@@ -1,3 +1,6 @@
+# Clear any existing builds.
+rm -rf ./dist
+
 # Install or upgrade build.
 python3 -m pip install --upgrade build
 # Build the release.
