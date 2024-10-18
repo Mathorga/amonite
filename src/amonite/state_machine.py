@@ -1,3 +1,5 @@
+from node import Node
+
 class State ():
     """
     State interface, defines all mandatory methods for state implementations.
@@ -29,14 +31,17 @@ class StateMachine:
 
     __slots__ = (
         "states",
+        "actor",
         "current_key"
     )
 
     def __init__(
         self,
-        states: dict[str, State] | None
+        states: dict[str, State] | None,
+        actor: Node
     ) -> None:
         self.states: dict[str, State] = states if states is not None else {}
+        self.actor: Node = actor
         self.current_key: str | None = list(self.states.keys())[0] if len(self.states) > 0 else None
 
         current_state: State | None = self.get_current_state()
