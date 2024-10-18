@@ -1,4 +1,4 @@
-from node import Node
+from amonite.node import Node
 
 class State ():
     """
