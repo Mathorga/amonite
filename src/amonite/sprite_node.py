@@ -24,6 +24,11 @@ class SpriteNode(PositionNode):
             y = y,
             z = z if z is not None else y
         )
+
+        self.__shader = shader
+        self.__samplers_2d = samplers_2d
+        self.__batch = batch
+
         # Make sure the given resource is filtered using a nearest neighbor filter.
         utils.set_filter(resource = resource, filter = gl.GL_NEAREST)
 
@@ -75,13 +80,31 @@ class SpriteNode(PositionNode):
         self,
         image: pyglet.image.Texture | pyglet.image.animation.Animation
     ) -> None:
-        if isinstance(self.sprite.image, pyglet.image.animation.Animation):
-            if self.sprite.image != image or (self.sprite.image is not None and self.sprite.frame_index >= len(self.sprite.image.frames) - 1):
-                self.sprite.image = image
-                self.sprite.frame_index = 0
-        else:
-            if self.sprite.image != image:
-                self.sprite.image = image
+
+        # Looks like the default image setter is not working properly atm, so just delete and recreate the sprite.
+        self.sprite.delete()
+        self.sprite = ShadedSprite(
+            img = image,
+            x = self.x * GLOBALS[Keys.SCALING],
+            y = self.y * GLOBALS[Keys.SCALING],
+            z = self.z if self.z is not None else -self.y,
+            program = self.__shader,
+            samplers_2d = self.__samplers_2d,
+            batch = self.__batch
+        )
+        self.sprite.scale = GLOBALS[Keys.SCALING]
+        self.sprite.push_handlers(self)
+
+        # # This should be enough since Sprite already handles edge cases.
+        # self.sprite.image = image
+
+        # if isinstance(self.sprite.image, pyglet.image.animation.Animation):
+        #     if self.sprite.image != image or (self.sprite.image is not None and self.sprite.frame_index >= len(self.sprite.image.frames) - 1):
+        #         self.sprite.image = image
+        #         self.sprite.frame_index = 0
+        # else:
+        #     if self.sprite.image != image:
+        #         self.sprite.image = image
 
     def get_frames_num(self) -> int:
         """
