@@ -1,6 +1,13 @@
 # Clear any existing builds.
 rm -rf ./dist
 
+# Create a venv if not already there.
+python3 -m venv .
+
+# Activate the venv.
+chmod +x ./bin/activate
+source ./bin/activate
+
 # Install or upgrade build.
 python3 -m pip install --upgrade build
 # Build the release.
