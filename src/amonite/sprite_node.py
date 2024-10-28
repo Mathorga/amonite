@@ -8,22 +8,57 @@ from amonite.settings import GLOBALS, Keys
 from amonite.utils import utils
 
 class SpriteNode(PositionNode):
+    """
+    Base sprite node. Holds a single sprite and handles its position and shader.
+
+    Attributes
+    ----------
+    resource: pyglet.image.Texture | pyglet.image.animation.Animation
+        The image resource to provide the sprite with.
+    batch: pyglet.graphics.Batch | None
+        The batch to use when rendering the sprite.
+    on_animation_end: Callable | None
+        A callback function which gets called when any sprite animation ends.
+    y_sort: bool
+        Whether to sort the sprite using its y position or not.
+    x: float
+        The sprite x position.
+    y: float
+        The sprite y position.
+    z: float | None
+        The sprite z position.
+    shader: pyglet.graphics.shader.ShaderProgram | None
+        The shader program to use to render the sprite.
+    samplers_2d: dict[str, pyglet.image.ImageData] | None
+        The list of samplers2d as required by the provided shader program.
+    """
+
+    __slots__ = (
+        "sprite",
+        "__y_sort",
+        "__on_animation_end"
+    )
+
     def __init__(
         self,
         resource: pyglet.image.Texture | pyglet.image.animation.Animation,
         batch: pyglet.graphics.Batch | None = None,
         on_animation_end: Callable | None = None,
+        y_sort: bool = True,
         x: float = 0,
         y: float = 0,
-        z: float | None = None,
+        z: float = 0,
         shader: pyglet.graphics.shader.ShaderProgram | None = None,
         samplers_2d: dict[str, pyglet.image.ImageData] | None = None,
     ) -> None:
         super().__init__(
             x = x,
             y = y,
-            z = z if z is not None else y
+            z = z
         )
+
+        self.__y_sort: bool = y_sort
+
         # Make sure the given resource is filtered using a nearest neighbor filter.
         utils.set_filter(resource = resource, filter = gl.GL_NEAREST)
 
@@ -31,7 +66,7 @@ class SpriteNode(PositionNode):
             img = resource,
             x = x * GLOBALS[Keys.SCALING],
             y = y * GLOBALS[Keys.SCALING],
-            z = z if z is not None else -y,
+            z = -y if y_sort else z,
             program = shader,
             samplers_2d = samplers_2d,
             batch = batch
@@ -52,7 +87,10 @@ class SpriteNode(PositionNode):
         position: tuple[float, float],
         z: float | None = None
     ) -> None:
-        super().set_position(position = position, z = z if z is not None else -position[1])
+        super().set_position(
+            position = position,
+            z = -position[1] if self.__y_sort else z if z is not None else self.z
+        )
 
         self.sprite.position = (
             self.x * GLOBALS[Keys.SCALING],
