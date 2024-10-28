@@ -21,3 +21,6 @@ python3 -m twine upload dist/*
 
 # Install the package from testPyPi.
 # python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps amonite-mathorga
+
+# Deactivate the venv.
+deactivate
