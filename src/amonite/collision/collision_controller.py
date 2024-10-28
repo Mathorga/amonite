@@ -5,7 +5,10 @@ VELOCITY_TOLERANCE: float = 1e-5
 
 class CollisionController:
     def __init__(self) -> None:
-        self.__colliders: dict[CollisionType, list[CollisionNode]] = {}
+        self.__colliders: dict[CollisionType, list[CollisionNode]] = {
+            CollisionType.DYNAMIC: [],
+            CollisionType.STATIC: []
+        }
 
     def add_collider(
         self,

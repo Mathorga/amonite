@@ -7,19 +7,37 @@ class State ():
     __slots__ = ()
 
     def start(self) -> None:
-        pass
-
-    def on_animation_end(self) -> str | None:
-        pass
-
-    def on_collision(self, tags: list[str], enter: bool) -> str | None:
-        pass
+        """
+        Startup pass. This method is called each time a state begins.
+        All preliminary operations should be performed here.
+        """
 
     def update(self, dt: float) -> str | None:
-        pass
+        """
+        Update pass. This method is called at each timestep of the game.
+        All continuous operations should be performed here.
+        Returning a state key here makes the state machine transition to it. Return None to perform no transition at all.
+        """
 
     def end(self) -> None:
-        pass
+        """
+        End pass. This method is called when a state ends.
+        All cleaning operations should be performed here.
+        """
+
+    def on_animation_end(self) -> None:
+        """
+        Handles sprite animation-end events if applicable.
+        Since events may be out of sync with the game loop,
+        state change upon event trigger should be performed by setting a flag in the event handling method and reacting to it in the update method.
+        """
+
+    def on_collision(self, tags: list[str], enter: bool) -> None:
+        """
+        Handles collision events if applicable.
+        Since events may be out of sync with the game loop,
+        state change upon event trigger should be performed by setting a flag in the event handling method and reacting to it in the update method.
+        """
 
 class StateMachine:
     """
@@ -74,14 +92,14 @@ class StateMachine:
         if current_state is None:
             return
 
-        self.transition(current_state.on_animation_end())
+        current_state.on_animation_end()
 
     def on_collision(self, tags: list[str], enter: bool) -> None:
         current_state: State | None = self.get_current_state()
         if current_state is None:
             return
 
-        self.transition(current_state.on_collision(tags = tags, enter = enter))
+        current_state.on_collision(tags = tags, enter = enter)
 
     def transition(self, key: str | None) -> None:
         """
