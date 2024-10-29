@@ -33,12 +33,6 @@ class SpriteNode(PositionNode):
         The list of samplers2d as required by the provided shader program.
     """
 
-    __slots__ = (
-        "sprite",
-        "__y_sort",
-        "__on_animation_end"
-    )
-
     def __init__(
         self,
         resource: pyglet.image.Texture | pyglet.image.animation.Animation,
