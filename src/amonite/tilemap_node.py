@@ -153,13 +153,14 @@ class TilemapNode(PositionNode):
     def from_tmx_file(
         # Path to the tmx file.
         source: str,
+        tilesets_path: str,
         x: float = 0.0,
         y: float = 0.0,
         # Distance (z-axis) between tilemap layers.
-        layers_spacing: Optional[int] = None,
+        layers_spacing: int | None = None,
         # Starting z-offset for all layers in the file.
         z_offset: int = 0,
-        batch: Optional[pyglet.graphics.Batch] = None
+        batch: pyglet.graphics.Batch | None = None
     ) -> list:
         """
         Constructs a new TileMap from the given TMX (XML) file.
@@ -167,6 +168,18 @@ class TilemapNode(PositionNode):
         dig_x -> layer below the playing level (meaning tiles will always be behind actors on the map).
         rat_x -> layer on the playing level (meaning tiles will be sorted z-sorted along with actors on the map).
         pid_x -> layer above the playing level (meaning tiles will always be in front of actors on the map).
+
+        Arguments
+        ---------
+        source: str
+            The path to the tmx file (starting from the defined assets directory).
+        tilesets_path: str
+            The path to the tileset files (starting from the defined assets directory).
+        x: float
+        y: float
+        layers_spacing: int | None
+        z_offset: int
+        batch: pyglet.graphics.Batch | None
         """
 
         root = xml.parse(f"{pyglet.resource.path[0]}/{source}").getroot()
@@ -184,7 +197,7 @@ class TilemapNode(PositionNode):
 
         # Extract a tileset from all the given file.
         tileset = Tileset(
-            sources = [f"tilesets/rughai/{ts.attrib['source'].split('/')[-1].split('.')[0]}.png" for ts in tilemap_tilesets],
+            sources = [f"{tilesets_path if tilesets_path is not None else 'tilesets/rughai/'}{ts.attrib['source'].split('/')[-1].split('.')[0]}.png" for ts in tilemap_tilesets],
             tile_width = tile_width,
             tile_height = tile_height
         )
@@ -223,6 +236,7 @@ class TilemapNode(PositionNode):
     @staticmethod
     def from_tmj_file(
         source: str,
+        tilesets_path: str,
         x: float = 0,
         y: float = 0,
     ) -> list:
@@ -240,7 +254,7 @@ class TilemapNode(PositionNode):
 
         # Extract a tileset from all the given file.
         tileset = Tileset(
-            sources = [f"tilesets/rughai/{ts['source'].split('.')[0]}.png" for ts in data["tilesets"]],
+            sources = [f"{tilesets_path if tilesets_path is not None else 'tilesets/rughai/'}{ts.attrib['source'].split('/')[-1].split('.')[0]}.png" for ts in tilemap_tilesets],
             tile_width = data["tilewidth"],
             tile_height = data["tileheight"]
         )
