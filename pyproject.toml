@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "amonite"
-version = "0.1.5"
+version = "0.1.6"
 authors = [
   { name = "Luka Micheletti", email = "michelettiluka@gmail.com" },
 ]
@@ -21,6 +21,7 @@ classifiers = [
 Homepage = "https://github.com/Mathorga/amonite"
 Issues = "https://github.com/Mathorga/amonite/issues"
 Source = "https://github.com/Mathorga/amonite"
+Changelog = "https://github.com/Mathorga/amonite/blob/master/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/amonite"]
