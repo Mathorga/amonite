@@ -23,7 +23,7 @@ class CollisionNode(PositionNode):
         collision_type: CollisionType = CollisionType.STATIC,
         sensor: bool = False,
         color: tuple[int, int, int, int] | None = None,
-        on_triggered: Callable[[list[str], bool], None] | None = None
+        on_triggered: Callable[[list[str], int, bool], None] | None = None
     ) -> None:
         super().__init__(x, y)
 

@@ -31,16 +31,16 @@ class CollisionController:
             # Loop through dynamic colliders.
             for actor in self.__colliders[CollisionType.DYNAMIC]:
                 # Trigger all collisions from the previous step.
-                for other in actor.in_collisions:
-                    if actor.on_triggered is not None:
-                        actor.on_triggered(other.passive_tags, True)
-                    if other.on_triggered is not None:
-                        other.on_triggered(actor.active_tags, True)
                 for other in actor.out_collisions:
                     if actor.on_triggered is not None:
-                        actor.on_triggered(other.passive_tags, False)
+                        actor.on_triggered(other.passive_tags, id(other), False)
                     if other.on_triggered is not None:
-                        other.on_triggered(actor.active_tags, False)
+                        other.on_triggered(actor.active_tags, id(actor), False)
+                for other in actor.in_collisions:
+                    if actor.on_triggered is not None:
+                        actor.on_triggered(other.passive_tags, id(other), True)
+                    if other.on_triggered is not None:
+                        other.on_triggered(actor.active_tags, id(actor), True)
                 actor.in_collisions.clear()
                 actor.out_collisions.clear()
 
