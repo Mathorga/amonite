@@ -12,6 +12,18 @@ class CollisionType(Enum):
     STATIC = 0
     DYNAMIC = 1
 
+class CollisionMethod(Enum):
+    """
+    Collision method enumerator:
+
+    Active collisions are the ones driven by velocity, they usually command the parent movement.
+
+    Passive collisions are not driven by velocity, they are usually commanded by parent movement.
+    """
+
+    ACTIVE = 0
+    PASSIVE = 1
+
 class CollisionNode(PositionNode):
     def __init__(
         self,
@@ -21,6 +33,7 @@ class CollisionNode(PositionNode):
         active_tags: list[str] = [],
         passive_tags: list[str] = [],
         collision_type: CollisionType = CollisionType.STATIC,
+        collision_method: CollisionMethod = CollisionMethod.ACTIVE,
         sensor: bool = False,
         color: tuple[int, int, int, int] | None = None,
         on_triggered: Callable[[list[str], int, bool], None] | None = None
@@ -28,19 +41,20 @@ class CollisionNode(PositionNode):
         super().__init__(x, y)
 
         # Velocity components.
-        self.velocity_x = 0.0
-        self.velocity_y = 0.0
+        self.velocity_x: float = 0.0
+        self.velocity_y: float = 0.0
 
-        self.active_tags = active_tags
-        self.passive_tags = passive_tags
-        self.type = collision_type
-        self.sensor = sensor
+        self.active_tags: list[str] = active_tags
+        self.passive_tags: list[str] = passive_tags
+        self.type: CollisionType = collision_type
+        self.method: CollisionMethod = collision_method
+        self.sensor: bool = sensor
         self.shape: CollisionShape = shape
-        self.on_triggered = on_triggered
+        self.on_triggered: Callable[[list[str], int, bool], None] | None = on_triggered
 
-        self.collisions = set[CollisionNode]()
-        self.in_collisions = set[CollisionNode]()
-        self.out_collisions = set[CollisionNode]()
+        self.collisions: set[CollisionNode] = set[CollisionNode]()
+        self.in_collisions: set[CollisionNode] = set[CollisionNode]()
+        self.out_collisions: set[CollisionNode] = set[CollisionNode]()
 
         # Set shape color.
         if color is not None:
