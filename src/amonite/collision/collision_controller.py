@@ -101,9 +101,12 @@ class CollisionController:
                         actor.on_triggered(other.passive_tags, id(other), True)
                     if other.on_triggered is not None:
                         other.on_triggered(actor.active_tags, id(actor), True)
+
+                # Clear all collisions after they've been triggered.
                 actor.in_collisions.clear()
                 actor.out_collisions.clear()
 
+                # Check for new collisions.
                 self.__handle_actor_collisions(actor = actor)
 
     def update(self, dt: float) -> None:

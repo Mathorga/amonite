@@ -25,6 +25,54 @@ class CollisionMethod(Enum):
     PASSIVE = 1
 
 class CollisionNode(PositionNode):
+    """
+    Generic collision node. Provides an entry point for all collision-related interactions and controls.
+
+    Attributes
+    ----------
+    velocity_x: float
+        X component of the collider's velocity vector.
+    velocity_y: float
+        X component of the collider's velocity vector.
+    active_tags: list[str]
+        Tags provided to others on collision (self->other).
+    passive_tags: list[str]
+        Tags provided to others on collision (other->self).
+    type: CollisionType
+        The type of collision to implement: DYNAMIC collisions are always tested against STATIC ones.
+    method: CollisionMethod
+        The method for computing collisions: ACTIVE collisions are computed by exhausting the collider's velocity, while PASSIVE collisions are computed by mere intersection checking, no velocity involved.
+        Typically ACTIVE colliders are used to control other objects' movement, while PASSIVE colliders are controlled by other objects' movement.
+    sensor: bool
+        Whether or not the collider should be used as a sensor or not. If True, the collider does not "physically" collide with others, but still registers overlaps as collisions.
+    shape: CollisionShape
+        The collision shape that defines the collider: all collisions are computed against the provided collision shape.
+    on_triggered: Callable[[list[str], int, bool], None] | None
+        Callback for handling collision events. This is called every time the collider enters or exits another.
+        Takes three parameters: a list of collision tags, the object id of the other collider and whether the collision is beginning (entering) or ending (exiting).
+    collisions: set[CollisionNode]
+        The list of all colliders self is currently colliding with.
+    in_collisions: set[CollisionNode]
+        The list of all just entered colliders self is colliding with.
+    out_collisions: set[CollisionNode]
+        The list of all just exited colliders self is colliding with.
+    """
+
+    __slots__ = (
+        "velocity_x",
+        "velocity_y",
+        "active_tags",
+        "passive_tags",
+        "type",
+        "method",
+        "sensor",
+        "shape",
+        "on_triggered",
+        "collisions",
+        "in_collisions",
+        "out_collisions"
+    )
+
     def __init__(
         self,
         shape: CollisionShape,
