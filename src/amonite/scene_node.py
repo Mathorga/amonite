@@ -218,13 +218,9 @@ class SceneNode(Node):
 
         self.__frozen = False
 
-    # def pre_update(self, dt: float) -> None:
-    #     # Update all children if not frozen.
-    #     if not self.__frozen:
-    #         for child in self.__children:
-    #             child.pre_update(dt = dt)
-
     def update(self, dt: float) -> None:
+        super().update(dt = dt)
+
         # Update curtain.
         self.__update_curtain(dt)
 
@@ -235,6 +231,14 @@ class SceneNode(Node):
 
         # Update camera.
         self.__update_camera(dt)
+
+    def fixed_update(self, dt):
+        super().fixed_update(dt = dt)
+
+        # Update all children if not frozen.
+        if not self.__frozen:
+            for child in self.__children:
+                child.fixed_update(dt = dt)
 
     def get_cam_bounds(self) -> Bounds | None:
         return self.__cam_bounds

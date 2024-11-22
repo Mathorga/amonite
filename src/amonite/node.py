@@ -20,12 +20,13 @@ class Node:
         """
         self.components.append(component)
 
-    def pre_update(
+    def update(
             self,
             dt: float
         ) -> None:
         """
-        Performs all preemptive operations on the object.
+        Updates the whole object.
+        All logic goes here.
 
         Parameters
         ----------
@@ -33,13 +34,13 @@ class Node:
             Time (in s) since the last frame was calculated.
         """
 
-    def update(
+    def fixed_update(
             self,
             dt: float
         ) -> None:
         """
         Updates the whole object.
-        All logic goes here, including movement.
+        All physics-related logic should go here.
 
         Parameters
         ----------
