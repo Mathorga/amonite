@@ -19,6 +19,13 @@ class State ():
         Returning a state key here makes the state machine transition to it. Return None to perform no transition at all.
         """
 
+    def fixed_update(self, dt: float) -> str | None:
+        """
+        Fixed update pass. This method is called at fixed time steps.
+        All continuous operations should be performed here.
+        Returning a state key here makes the state machine transition to it. Return None to perform no transition at all.
+        """
+
     def end(self) -> None:
         """
         End pass. This method is called when a state ends.
@@ -132,3 +139,13 @@ class StateMachine:
 
         # Call the current state's update method.
         self.transition(self.states[self.current_key].update(dt = dt))
+
+    def fixed_update(self, dt: float) -> None:
+        # TODO Maybe this should not trigger state change.
+
+        # Just return if there's no current state.
+        if self.current_key is None:
+            return
+
+        # Call the current state's update method.
+        self.transition(self.states[self.current_key].fixed_update(dt = dt))
