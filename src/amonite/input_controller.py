@@ -1,6 +1,7 @@
 from functools import reduce
 from typing import Any
 import pyglet
+import pyglet.math as pm
 
 class InputController:
     def __init__(
@@ -219,6 +220,15 @@ class InputController:
     ) -> bool:
         button_releases: dict[str, bool] | None = self.button_releases[controller_index] if controller_index < len(self.button_releases) else None
         return button_releases.get(button, False) if button_releases is not None else default_value
+
+    def get_stick(
+        self,
+        stick: str,
+        controller_index: int = 0
+    ) -> pm.Vec2:
+        sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
+        result: tuple[float, float] = sticks.get(stick, (0.0, 0.0)) if sticks is not None else (0.0, 0.0)
+        return pm.Vec2(result[0], result[1])
 
     def get_modifier(
         self,
