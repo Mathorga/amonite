@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import Any
 import pyglet
 
 class InputController:
@@ -11,28 +12,52 @@ class InputController:
         self.__threshold = threshold
 
         # Keyboard.
-        self.keys: dict = {}
-        self.key_presses: dict = {}
-        self.key_releases: dict = {}
+        self.keys: dict[str, bool] = {}
+        self.key_presses: dict[str, bool] = {}
+        self.key_releases: dict[str, bool] = {}
 
         # Controller.
-        self.buttons: dict = {}
-        self.button_presses: dict = {}
-        self.button_releases: dict = {}
-        self.sticks: dict = {}
-        self.triggers: dict = {}
+        self.buttons: list[dict[str, bool]] = []
+        self.button_presses: list[dict[str, bool]] = []
+        self.button_releases: list[dict[str, bool]] = []
+        self.sticks: list[dict[str, tuple[float, float]]] = []
+        self.triggers: list[dict[str, bool]] = []
 
         self.__window.push_handlers(self)
 
         # Get controllers.
         controller_manager = pyglet.input.ControllerManager()
-        controllers = controller_manager.get_controllers()
-        if controllers:
-            controller = controllers[0]
-            controller.open()
-            controller.push_handlers(self)
+        self.controllers: list[pyglet.input.Controller] = []
+        all_controllers: list[pyglet.input.Controller] = controller_manager.get_controllers()
+        for controller in all_controllers:
+            self.add_controller(controller = controller)
 
         controller_manager.push_handlers(self)
+
+    def add_controller(self, controller: pyglet.input.Controller) -> None:
+        controller.open()
+        controller.push_handlers(self)
+        self.controllers.append(controller)
+        self.buttons.append({})
+        self.button_presses.append({})
+        self.button_releases.append({})
+        self.sticks.append({})
+        self.triggers.append({})
+
+    def remove_controller(self, controller: pyglet.input.Controller) -> None:
+        # Fetch controller index and return if not found.
+        controller_index: int
+        try:
+            controller_index = self.controllers.index(controller)
+        except:
+            return
+
+        self.buttons.pop(controller_index)
+        self.button_presses.pop(controller_index)
+        self.button_releases.pop(controller_index)
+        self.sticks.pop(controller_index)
+        self.triggers.pop(controller_index)
+        self.controllers.remove(controller)
 
     # ----------------------------------------------------------------------
     # Keyboard events.
@@ -56,46 +81,107 @@ class InputController:
         self.keys[symbol] = False
         self.key_presses[symbol] = False
         self.key_releases[symbol] = True
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     # ----------------------------------------------------------------------
     # Controller events.
     # ----------------------------------------------------------------------
-    def on_connect(self, controller):
-        controller.open()
-        controller.push_handlers(self)
+    def on_connect(
+        self,
+        controller: pyglet.input.Controller
+    ) -> None:
+        self.add_controller(controller = controller)
         print("controller_connected:", controller)
 
-    def on_disconnect(self, controller):
-        self.buttons.clear()
-        self.button_presses.clear()
-        self.button_releases.clear()
+    def on_disconnect(
+        self,
+        controller: pyglet.input.Controller
+    ) -> None:
+        self.remove_controller(controller = controller)
         print("controller_disconnected:", controller)
 
-    def on_button_press(self, controller, button_name):
-        self.buttons[button_name] = True
+    def on_button_press(
+        self,
+        controller: pyglet.input.Controller,
+        button_name: str
+    ) -> None:
+        # Fetch controller index and return if not found.
+        controller_index: int
+        try:
+            controller_index = self.controllers.index(controller)
+        except:
+            return
+
+        self.buttons[controller_index][button_name] = True
 
         # Only save key press if the key has been released first.
-        self.button_presses[button_name] = self.button_releases.get(button_name, True)
-        self.button_releases[button_name] = False
+        self.button_presses[controller_index][button_name] = self.button_releases[controller_index].get(button_name, True)
+        self.button_releases[controller_index][button_name] = False
 
-    def on_button_release(self, controller, button_name):
-        self.buttons[button_name] = False
-        self.button_presses[button_name] = False
-        self.button_releases[button_name] = True
+    def on_button_release(
+        self,
+        controller: pyglet.input.Controller,
+        button_name: str
+    ) -> None:
+        # Fetch controller index and return if not found.
+        controller_index: int
+        try:
+            controller_index = self.controllers.index(controller)
+        except:
+            return
 
-    def on_dpad_motion(self, controller, dpleft, dpright, dpup, dpdown):
+        self.buttons[controller_index][button_name] = False
+        self.button_presses[controller_index][button_name] = False
+        self.button_releases[controller_index][button_name] = True
+
+    def on_dpad_motion(
+        self,
+        controller: pyglet.input.Controller,
+        dpleft,
+        dpright,
+        dpup,
+        dpdown
+    ) -> None:
         pass
 
-    def on_stick_motion(self, controller, stick, xvalue, yvalue):
-        self.sticks[stick] = (
+    def on_stick_motion(
+        self,
+        controller: pyglet.input.Controller,
+        stick: str,
+        xvalue: float,
+        yvalue: float
+    ) -> None:
+        # Fetch controller index and return if not found.
+        controller_index: int
+        try:
+            controller_index = self.controllers.index(controller)
+        except:
+            return
+
+        self.sticks[controller_index][stick] = (
             xvalue if xvalue < -self.__threshold or xvalue > self.__threshold else 0.0,
             yvalue if yvalue < -self.__threshold or yvalue > self.__threshold else 0.0
         )
 
-    def on_trigger_motion(self, controller, trigger, value):
-        self.triggers[trigger] = value if value > self.__threshold else 0.0
+    def on_trigger_motion(
+        self,
+        controller: pyglet.input.Controller,
+        trigger: str,
+        value: float
+    ) -> None:
+        # Fetch controller index and return if not found.
+        controller_index: int
+        try:
+            controller_index = self.controllers.index(controller)
+        except:
+            return
 
-    def __getitem__(self, key):
+        self.triggers[controller_index][trigger] = value if value > self.__threshold else 0.0
+    # ----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
+
+    def __getitem__(self, key: str):
         return self.keys.get(key, False)
 
     def __enter__(self):
@@ -107,79 +193,156 @@ class InputController:
     # ----------------------------------------------------------------------
     # Getters.
     # ----------------------------------------------------------------------
-    def get_modifier(self) -> bool:
+    def get_button(
+        self,
+        button: str,
+        controller_index: int = 0,
+        default_value: bool = False,
+    ) -> bool:
+        buttons: dict[str, bool] | None = self.buttons[controller_index] if controller_index < len(self.buttons) else None
+        return buttons.get(button, False) if buttons is not None else default_value
+
+    def get_button_presses(
+        self,
+        button: str,
+        controller_index: int = 0,
+        default_value: bool = False,
+    ) -> bool:
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
+        return button_presses.get(button, False) if button_presses is not None else default_value
+
+    def get_button_release(
+        self,
+        button: str,
+        controller_index: int = 0,
+        default_value: bool = False,
+    ) -> bool:
+        button_releases: dict[str, bool] | None = self.button_releases[controller_index] if controller_index < len(self.button_releases) else None
+        return button_releases.get(button, False) if button_releases is not None else default_value
+
+    def get_modifier(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether or not the modifier key is being pressed, either on controller or keyboard.
         """
 
-        return self[pyglet.window.key.LSHIFT] or self.buttons.get("leftshoulder", False)
+        buttons: dict[str, bool] | None = self.buttons[controller_index] if controller_index < len(self.buttons) else None
 
-    def get_sprint(self) -> bool:
+        return self[pyglet.window.key.LSHIFT] or (buttons.get("leftshoulder", False) if buttons is not None else False)
+
+    def get_sprint(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the sprint button was pressed or not, either on controller or keyboard.
         """
 
-        return self.key_presses.get(pyglet.window.key.SPACE, False) or self.button_presses.get("b", False)
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
 
-    def get_interaction(self) -> bool:
+        return self.key_presses.get(pyglet.window.key.SPACE, False) or (button_presses.get("b", False) if button_presses is not None else False)
+
+    def get_interaction(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the interact button was pressed or not, either on controller or keyboard.
         """
 
-        return self.key_presses.get(pyglet.window.key.F, False) or self.key_presses.get(pyglet.window.key.H, False) or self.button_presses.get("a", False)
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
 
-    def get_main_atk(self) -> bool:
+        return self.key_presses.get(pyglet.window.key.F, False) or self.key_presses.get(pyglet.window.key.H, False) or (button_presses.get("a", False) if button_presses is not None else False)
+
+    def get_main_atk(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the main attack button was pressed or not, either on controller or keyboard.
         """
 
-        return self.key_presses.get(pyglet.window.key.M, False) or self.button_presses.get("x", False)
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
 
-    def get_secondary_atk(self) -> bool:
+        return self.key_presses.get(pyglet.window.key.M, False) or (button_presses.get("x", False) if button_presses is not None else False)
+
+    def get_secondary_atk(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the secondary attack button was pressed or not, either on controller or keyboard.
         """
 
-        return self.key_presses.get(pyglet.window.key.K, False) or self.button_presses.get("y", False)
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
 
-    def get_fire_aim(self) -> bool:
+        return self.key_presses.get(pyglet.window.key.K, False) or (button_presses[controller_index].get("y", False) if button_presses is not None else False)
+
+    def get_fire_aim(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the range attack aim button was pressed or not.
         """
 
-        return self.triggers.get("lefttrigger", 0.0) > 0.0
+        triggers: dict[str, float] | None = self.triggers[controller_index] if controller_index < len(self.triggers) else None
 
-    def get_fire_load(self) -> bool:
+        return triggers.get("lefttrigger", 0.0) > 0.0 if triggers is not None else False
+
+    def get_fire_load(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the range attack load button was pressed or not.
         """
 
-        return self.triggers.get("righttrigger", 0.0) > 0.0
+        triggers: dict[str, float] | None = self.triggers[controller_index] if controller_index < len(self.triggers) else None
 
-    def get_movement(self) -> bool:
+        return triggers.get("righttrigger", 0.0) > 0.0 if triggers is not None else False
+
+    def get_movement(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether there's any move input or not, regardless its resulting magnitude.
         """
 
-        stick: tuple[float, float] = self.sticks.get("leftstick", (0.0, 0.0))
+        sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
+
+        stick: tuple[float, float] = (sticks.get("leftstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
         return self[pyglet.window.key.D] or self[pyglet.window.key.A] or self[pyglet.window.key.W] or self[pyglet.window.key.S] or stick_vec.mag > 0.0
 
-    def get_aim(self) -> bool:
+    def get_aim(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether there's any aim input or not, regardless its resulting magnitude.
         """
 
-        stick: tuple[float, float] = self.sticks.get("rightstick", (0.0, 0.0))
+        sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
+
+        stick: tuple[float, float] = (sticks.get("rightstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
         return self[pyglet.window.key.L] or self[pyglet.window.key.J] or self[pyglet.window.key.I] or self[pyglet.window.key.K] or stick_vec.mag > 0.0
 
-    def get_movement_vec(self) -> pyglet.math.Vec2:
+    def get_movement_vec(
+        self,
+        controller_index: int = 0
+    ) -> pyglet.math.Vec2:
         """
         Returns the movement vector from keyboard and controller.
         """
 
-        stick: tuple[float, float] = self.sticks.get("leftstick", (0.0, 0.0))
+        sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
+
+        stick: tuple[float, float] = (sticks.get("leftstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
         keyboard_vec: pyglet.math.Vec2 = pyglet.math.Vec2(
             self[pyglet.window.key.D] - self[pyglet.window.key.A],
@@ -188,12 +351,17 @@ class InputController:
 
         return (stick_vec + keyboard_vec).normalize()
 
-    def get_aim_vec(self) -> pyglet.math.Vec2:
+    def get_aim_vec(
+        self,
+        controller_index: int = 0
+    ) -> pyglet.math.Vec2:
         """
         Returns the camera movement vector from keyboard and controller.
         """
 
-        stick: tuple[float, float] = self.sticks.get("rightstick", (0.0, 0.0))
+        sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
+
+        stick: tuple[float, float] = (sticks.get("rightstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
         keyboard_vec: pyglet.math.Vec2 = pyglet.math.Vec2(
             self[pyglet.window.key.L] - self[pyglet.window.key.J],
@@ -296,16 +464,26 @@ class InputController:
     def get_menu_page_right(self) -> bool:
         return self.key_presses.get(pyglet.window.key.E, False)
 
-    def get_draw(self) -> bool:
+    def get_draw(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the draw button was pressed or not, either on controller or keyboard.
         """
 
-        return self[pyglet.window.key.SPACE] or self.triggers.get("righttrigger", 0.0) > 0.0
+        triggers: dict[str, float] | None = self.triggers[controller_index] if controller_index < len(self.triggers) else None
 
-    def get_inventory_toggle(self) -> bool:
+        return self[pyglet.window.key.SPACE] or (triggers.get("righttrigger", 0.0) > 0.0 if triggers is not None else False)
+
+    def get_inventory_toggle(
+        self,
+        controller_index: int = 0
+    ) -> bool:
         """
         Returns whether the inventory toggle button was pressed or not.
         """
 
-        return self.key_presses.get(pyglet.window.key.ENTER, False) or self.button_presses.get("start", False)
+        button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
+
+        return self.key_presses.get(pyglet.window.key.ENTER, False) or (button_presses.get("start", False) if button_presses is not None else False)
