@@ -1,7 +1,62 @@
+from enum import Enum
 from functools import reduce
 from typing import Any
 import pyglet
 import pyglet.math as pm
+
+class ControllerButton(Enum, str):
+    ########################
+    # Left hand buttons.
+    ########################
+    UP = "dpup"
+    LEFT = "dpleft"
+    DOWN = "dpdown"
+    RIGHT = "dpright"
+    ########################
+    ########################
+
+    ########################
+    # Right hand buttons.
+    ########################
+    NORTH = "y"
+    WEST = "x"
+    SOUTH = "a"
+    EAST = "b"
+    ########################
+    ########################
+
+    ########################
+    # Function buttons.
+    ########################
+    START = "start"
+    SELECT = "select"
+    LOGO = "guide"
+    ########################
+    ########################
+
+    ########################
+    # Stick buttons.
+    ########################
+    LSTICK = "leftstick"
+    RSTICK = "rightstick"
+    ########################
+    ########################
+
+    ########################
+    # Shoulder buttons.
+    ########################
+    LSHOULDER = "leftshoulder"
+    RSHOULDER = "rightshoulder"
+    ########################
+    ########################
+
+class ControllerStick(Enum, str):
+    LSTICK = "leftstick"
+    RSTICK = "rightstick"
+
+class ControllerTrigger(Enum, str):
+    LTRIGGER = "lefttrigger"
+    RTRIGGER = "righttrigger"
 
 class InputController:
     def __init__(
@@ -196,7 +251,7 @@ class InputController:
     # ----------------------------------------------------------------------
     def get_button(
         self,
-        button: str,
+        button: ControllerButton,
         controller_index: int = 0,
         default_value: bool = False,
     ) -> bool:
@@ -205,7 +260,7 @@ class InputController:
 
     def get_button_presses(
         self,
-        button: str,
+        button: ControllerButton,
         controller_index: int = 0,
         default_value: bool = False,
     ) -> bool:
@@ -214,7 +269,7 @@ class InputController:
 
     def get_button_release(
         self,
-        button: str,
+        button: ControllerButton,
         controller_index: int = 0,
         default_value: bool = False,
     ) -> bool:
@@ -223,12 +278,51 @@ class InputController:
 
     def get_stick(
         self,
-        stick: str,
+        stick: ControllerStick,
+        threshold: float,
+        controller_index: int = 0,
+    ) -> bool:
+        stick_vec: pm.Vec2 = self.get_stick_vector(
+            stick = stick,
+            controller_index = controller_index
+        )
+
+        return stick_vec.mag > (threshold if threshold is not None else self.__threshold)
+
+    def get_stick_vector(
+        self,
+        stick: ControllerStick,
         controller_index: int = 0
     ) -> pm.Vec2:
         sticks: dict[str, tuple[float, float]] | None = self.sticks[controller_index] if controller_index < len(self.sticks) else None
         result: tuple[float, float] = sticks.get(stick, (0.0, 0.0)) if sticks is not None else (0.0, 0.0)
         return pm.Vec2(result[0], result[1])
+
+    def get_trigger(
+        self,
+        trigger: ControllerTrigger,
+        controller_index: int = 0
+    ) -> float:
+        triggers: dict[str, float] | None = self.triggers[controller_index] if controller_index < len(self.triggers) else None
+        return triggers.get(trigger, 0.0) > 0.0 if triggers is not None else False
+
+    def get_key_vector(
+        self,
+        up: int = pyglet.window.key.W,
+        left: int = pyglet.window.key.A,
+        down: int = pyglet.window.key.S,
+        right: int = pyglet.window.key.D
+    ) -> pm.Vec2:
+        """
+        Returns a vector
+        """
+
+        keyboard_vec: pyglet.math.Vec2 = pyglet.math.Vec2(
+            self[right] - self[left],
+            self[up] - self[down]
+        ).from_magnitude(1.0)
+
+        return keyboard_vec.normalize()
 
     def get_modifier(
         self,
