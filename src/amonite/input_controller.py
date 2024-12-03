@@ -276,7 +276,7 @@ class InputController:
         button_releases: dict[str, bool] | None = self.button_releases[controller_index] if controller_index < len(self.button_releases) else None
         return button_releases.get(button, False) if button_releases is not None else default_value
 
-    def get_stick(
+    def get_stick_activation(
         self,
         stick: ControllerStick,
         threshold: float,
