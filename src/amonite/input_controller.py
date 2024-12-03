@@ -13,16 +13,16 @@ class InputController:
         self.__threshold = threshold
 
         # Keyboard.
-        self.keys: dict[str, bool] = {}
-        self.key_presses: dict[str, bool] = {}
-        self.key_releases: dict[str, bool] = {}
+        self.keys: dict[int, bool] = {}
+        self.key_presses: dict[int, bool] = {}
+        self.key_releases: dict[int, bool] = {}
 
         # Controller.
         self.buttons: list[dict[str, bool]] = []
         self.button_presses: list[dict[str, bool]] = []
         self.button_releases: list[dict[str, bool]] = []
         self.sticks: list[dict[str, tuple[float, float]]] = []
-        self.triggers: list[dict[str, bool]] = []
+        self.triggers: list[dict[str, float]] = []
 
         self.__window.push_handlers(self)
 
@@ -182,7 +182,7 @@ class InputController:
     # ----------------------------------------------------------------------
     # ----------------------------------------------------------------------
 
-    def __getitem__(self, key: str):
+    def __getitem__(self, key: int):
         return self.keys.get(key, False)
 
     def __enter__(self):
@@ -288,7 +288,7 @@ class InputController:
 
         button_presses: dict[str, bool] | None = self.button_presses[controller_index] if controller_index < len(self.button_presses) else None
 
-        return self.key_presses.get(pyglet.window.key.K, False) or (button_presses[controller_index].get("y", False) if button_presses is not None else False)
+        return self.key_presses.get(pyglet.window.key.K, False) or (button_presses.get("y", False) if button_presses is not None else False)
 
     def get_fire_aim(
         self,
