@@ -4,7 +4,7 @@ from typing import Any
 import pyglet
 import pyglet.math as pm
 
-class ControllerButton(Enum, str):
+class ControllerButton(str, Enum):
     ########################
     # Left hand buttons.
     ########################
@@ -50,11 +50,11 @@ class ControllerButton(Enum, str):
     ########################
     ########################
 
-class ControllerStick(Enum, str):
+class ControllerStick(str, Enum):
     LSTICK = "leftstick"
     RSTICK = "rightstick"
 
-class ControllerTrigger(Enum, str):
+class ControllerTrigger(str, Enum):
     LTRIGGER = "lefttrigger"
     RTRIGGER = "righttrigger"
 
@@ -279,7 +279,7 @@ class InputController:
     def get_stick_activation(
         self,
         stick: ControllerStick,
-        threshold: float,
+        threshold: float | None = None,
         controller_index: int = 0,
     ) -> bool:
         stick_vec: pm.Vec2 = self.get_stick_vector(
