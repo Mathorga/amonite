@@ -4,8 +4,11 @@ import pyglet
 
 from amonite.wall_node import WallNode
 
-
 class WallsLoader:
+    """
+    This class is deprecated: use HittablesLoader instead.
+    """
+
     @staticmethod
     def fetch(
         source: str,
@@ -48,7 +51,7 @@ class WallsLoader:
                 size_string: str = sizes[i]
 
                 position: list[float] = list(map(lambda item: float(item), position_string.split(",")))
-                size: list[float] = list(map(lambda item: float(item), size_string.split(",")))
+                size: list[int] = list(map(lambda item: int(item), size_string.split(",")))
 
                 assert len(position) == 2 and len(size) == 2
 
