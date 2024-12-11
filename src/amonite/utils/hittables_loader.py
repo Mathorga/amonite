@@ -1,5 +1,6 @@
 import os
 import json
+from typing import Any
 import pyglet
 
 from amonite import controllers
@@ -62,8 +63,7 @@ class HittablesLoader:
     @staticmethod
     def fetch(
         source: str,
-        batch: pyglet.graphics.Batch | None = None,
-        sensor: bool = False
+        batch: pyglet.graphics.Batch | None = None
     ) -> list[HittableNode]:
         """
         Reads and returns the list of walls from the file provided in [source].
@@ -79,7 +79,7 @@ class HittablesLoader:
 
         print(f"Loading hittables {abs_path}")
 
-        data: dict
+        data: dict[str, Any]
 
         # Load the json file.
         with open(file = abs_path, mode = "r", encoding = "UTF8") as source_file:
@@ -112,7 +112,7 @@ class HittablesLoader:
                     y = position[1],
                     width = int(size[0]),
                     height = size[1],
-                    sensor = sensor,
+                    sensor = element["sensor"],
                     tags = element["tags"],
                     batch = batch
                 ))
@@ -129,20 +129,21 @@ class HittablesLoader:
         Hittables are internally sorted by tags.
         """
 
-        # Group hittables by tags.
-        hittables_data: dict[str, list[HittableNode]] = {}
+        # Group hittables by tags and sensority.
+        hittables_data: dict[tuple[str, bool], list[HittableNode]] = {}
         for hittable in hittables:
-            key: str = ",".join(hittable.tags)
+            key: tuple[str, bool] = (",".join(hittable.tags), hittable.sensor)
             if not key in hittables_data:
                 hittables_data[key] = [hittable]
             else:
                 hittables_data[key].append(hittable)
 
         # Prepare hittables data for storage.
-        result: list[dict[str, list[str]]] = []
+        result: list[dict[str, Any]] = []
         for key, value in hittables_data.items():
-            element: dict[str, list[str]] = {
-                "tags": key.split(","),
+            element: dict[str, Any] = {
+                "tags": key[0].split(","),
+                "sensor": key[1],
                 "positions": list(map(lambda w: f"{w.x},{w.y}", value)),
                 "sizes": list(map(lambda w: f"{w.width},{w.height}", value)),
             }
