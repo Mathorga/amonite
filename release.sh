@@ -8,13 +8,12 @@ python3 -m venv .
 chmod +x ./bin/activate
 source ./bin/activate
 
-# Install or upgrade build.
-python3 -m pip install --upgrade build
+# Install dependencies.
+python3 -m pip install --upgrade -r release_requirements.txt
+
 # Build the release.
 python3 -m build
 
-# Install or upgrade twine.
-python3 -m pip install --upgrade twine
 # Release to PyPi.
 # python3 -m twine upload --repository pypi dist/*
 python3 -m twine upload dist/*
