@@ -11,11 +11,17 @@ class LineNode(ShapeNode):
         color: tuple[int, int, int, int] = (0xFF, 0xFF, 0xFF, 0xFF),
         x: float = 0.0,
         y: float = 0.0,
+        z: float = 0.0,
         delta_x: float = 0.0,
         delta_y: float = 0.0,
         batch: Optional[pyglet.graphics.Batch] = None
     ) -> None:
-        super().__init__(x, y, color)
+        super().__init__(
+            x = x,
+            y = y,
+            z = z,
+            color = color
+        )
 
         self.delta_x = delta_x
         self.delta_y = delta_y

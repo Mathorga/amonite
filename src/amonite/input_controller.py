@@ -194,10 +194,7 @@ class InputController:
     def on_dpad_motion(
         self,
         controller: pyglet.input.Controller,
-        dpleft,
-        dpright,
-        dpup,
-        dpdown
+        vector: pm.Vec2
     ) -> None:
         pass
 
@@ -205,8 +202,7 @@ class InputController:
         self,
         controller: pyglet.input.Controller,
         stick: str,
-        xvalue: float,
-        yvalue: float
+        vector: pm.Vec2
     ) -> None:
         # Fetch controller index and return if not found.
         controller_index: int
@@ -216,8 +212,8 @@ class InputController:
             return
 
         self.sticks[controller_index][stick] = (
-            xvalue if xvalue < -self.__threshold or xvalue > self.__threshold else 0.0,
-            yvalue if yvalue < -self.__threshold or yvalue > self.__threshold else 0.0
+            vector.x if vector.x < -self.__threshold or vector.x > self.__threshold else 0.0,
+            vector.y if vector.y < -self.__threshold or vector.y > self.__threshold else 0.0
         )
 
     def on_trigger_motion(
