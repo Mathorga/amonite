@@ -30,13 +30,13 @@ class RectNode(ShapeNode):
         self.__shape: pyglet.shapes.Rectangle = pyglet.shapes.Rectangle(
             x = x * GLOBALS[Keys.SCALING],
             y = y * GLOBALS[Keys.SCALING],
-            z = z,
             width = width * GLOBALS[Keys.SCALING],
             height = height * GLOBALS[Keys.SCALING],
             color = color,
             group = pyglet.graphics.Group(order = int(z)),
             batch = batch
         )
+        self.__shape.z = z
         self.__shape.anchor_position = (anchor_x * GLOBALS[Keys.SCALING], anchor_y * GLOBALS[Keys.SCALING])
 
     def delete(self) -> None:

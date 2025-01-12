@@ -26,11 +26,11 @@ class CircleNode(ShapeNode):
         self.__shape = pyglet.shapes.Circle(
             x = x * GLOBALS[Keys.SCALING],
             y = y * GLOBALS[Keys.SCALING],
-            z = z,
             radius = radius * GLOBALS[Keys.SCALING],
             color = color,
             batch = batch
         )
+        self.__shape.z = z
 
     def delete(self) -> None:
         self.__shape.delete()

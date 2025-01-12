@@ -35,6 +35,7 @@ class LineNode(ShapeNode):
             width = 1 * GLOBALS[Keys.SCALING],
             batch = batch
         )
+        self.__shape.z = z
 
         # self.__shape = pyglet.shapes.Line(
         #     x = -1000 * GLOBALS[Builtins.SCALING],
