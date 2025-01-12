@@ -166,7 +166,7 @@ class SceneNode(Node):
             scaled_view_size: tuple[int, int] = self.get_scaled_view_size()
 
             # Compute camera shake.
-            camera_shake: pm.Vec2 = pm.Vec2.from_polar(mag = self.__cam_shake * random.random(), angle = math.pi * 2 * random.random())
+            camera_shake: pm.Vec2 = pm.Vec2.from_polar(length = self.__cam_shake * random.random(), angle = math.pi * 2 * random.random())
 
             # Compute camera movement from camera target.
             camera_movement: pm.Vec2 = pm.Vec2(
@@ -189,9 +189,9 @@ class SceneNode(Node):
                     updated_x = self.__cam_bounds.right * GLOBALS[Keys.SCALING] - self.__view_width * GLOBALS[Keys.SCALING]
 
             # Damp down impulse.
-            if self.__cam_impulse.mag > 0.0:
-                self.__cam_impulse = self.__cam_impulse.from_magnitude(magnitude = round(self.__cam_impulse.mag - self.__cam_impulse_damp, GLOBALS[Keys.FLOAT_ROUNDING]))
-            if self.__cam_impulse.mag < 0.0:
+            if self.__cam_impulse.length() > 0.0:
+                self.__cam_impulse = self.__cam_impulse.from_magnitude(magnitude = round(self.__cam_impulse.length() - self.__cam_impulse_damp, GLOBALS[Keys.FLOAT_ROUNDING]))
+            if self.__cam_impulse.length() < 0.0:
                 self.__cam_impulse = pyglet.math.Vec2(0.0, 0.0)
 
             # Actually update camera position.

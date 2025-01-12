@@ -283,7 +283,7 @@ class InputController:
             controller_index = controller_index
         )
 
-        return stick_vec.mag > (threshold if threshold is not None else self.__threshold)
+        return stick_vec.length() > (threshold if threshold is not None else self.__threshold)
 
     def get_stick_vector(
         self,
@@ -416,7 +416,7 @@ class InputController:
 
         stick: tuple[float, float] = (sticks.get("leftstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
-        return self[pyglet.window.key.D] or self[pyglet.window.key.A] or self[pyglet.window.key.W] or self[pyglet.window.key.S] or stick_vec.mag > 0.0
+        return self[pyglet.window.key.D] or self[pyglet.window.key.A] or self[pyglet.window.key.W] or self[pyglet.window.key.S] or stick_vec.length() > 0.0
 
     def get_aim(
         self,
@@ -430,7 +430,7 @@ class InputController:
 
         stick: tuple[float, float] = (sticks.get("rightstick", (0.0, 0.0)) if sticks is not None else (0.0, 0.0))
         stick_vec: pyglet.math.Vec2 = pyglet.math.Vec2(stick[0], stick[1])
-        return self[pyglet.window.key.L] or self[pyglet.window.key.J] or self[pyglet.window.key.I] or self[pyglet.window.key.K] or stick_vec.mag > 0.0
+        return self[pyglet.window.key.L] or self[pyglet.window.key.J] or self[pyglet.window.key.I] or self[pyglet.window.key.K] or stick_vec.length() > 0.0
 
     def get_movement_vec(
         self,
@@ -447,7 +447,7 @@ class InputController:
         keyboard_vec: pyglet.math.Vec2 = pyglet.math.Vec2(
             self[pyglet.window.key.D] - self[pyglet.window.key.A],
             self[pyglet.window.key.W] - self[pyglet.window.key.S]
-        ).from_magnitude(1.0)
+        ).normalize()
 
         return (stick_vec + keyboard_vec).normalize()
 
