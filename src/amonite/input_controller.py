@@ -316,7 +316,7 @@ class InputController:
         keyboard_vec: pyglet.math.Vec2 = pyglet.math.Vec2(
             self[right] - self[left],
             self[up] - self[down]
-        ).from_magnitude(1.0)
+        ).normalize()
 
         return keyboard_vec.normalize()
 
