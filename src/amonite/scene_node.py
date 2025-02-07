@@ -60,6 +60,7 @@ class SceneNode(Node):
         on_scene_end: Callable[[], None] | None = None,
         default_cam_speed: float = 10.0,
         curtain_speed: float = 1.0,
+        curtain_z: float = 0.0,
         cam_bounds: Bounds | None = None
     ):
         self.__view_width = view_width
@@ -104,6 +105,7 @@ class SceneNode(Node):
         self.__curtain = RectNode(
             x = 0.0,
             y = 0.0,
+            z = curtain_z,
             width = view_width,
             height = view_height
         )
