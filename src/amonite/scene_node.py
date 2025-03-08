@@ -327,12 +327,22 @@ class SceneNode(Node):
 
     def add_children(
         self,
-        children: Sequence[Node | PositionNode],
+        children: Sequence[Node | PositionNode]
     ):
         for child in children:
             self.add_child(
                 child = child
             )
+
+    def contains(
+        self,
+        child: Node | PositionNode
+    ) -> bool:
+        """
+        Tells whether [child] is currently among the scene children or not.
+        """
+
+        return child in self.__children
 
     def delete(self):
         for child in self.__children:
