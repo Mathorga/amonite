@@ -93,14 +93,14 @@ class CollisionController:
                 # Trigger all collisions from the previous step.
                 for other in actor.out_collisions:
                     if actor.on_triggered is not None:
-                        actor.on_triggered(other.passive_tags, id(other), False)
+                        actor.on_triggered(other.passive_tags, other, False)
                     if other.on_triggered is not None:
-                        other.on_triggered(actor.active_tags, id(actor), False)
+                        other.on_triggered(actor.active_tags, actor, False)
                 for other in actor.in_collisions:
                     if actor.on_triggered is not None:
-                        actor.on_triggered(other.passive_tags, id(other), True)
+                        actor.on_triggered(other.passive_tags, other, True)
                     if other.on_triggered is not None:
-                        other.on_triggered(actor.active_tags, id(actor), True)
+                        other.on_triggered(actor.active_tags, actor, True)
 
                 # Clear all collisions after they've been triggered.
                 actor.in_collisions.clear()
