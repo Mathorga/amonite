@@ -47,6 +47,8 @@ class CollisionNode(PositionNode):
         Whether or not the collider should be used as a sensor or not. If True, the collider does not "physically" collide with others, but still registers overlaps as collisions.
     shape: CollisionShape
         The collision shape that defines the collider: all collisions are computed against the provided collision shape.
+    owner: PositionNode | None
+        The owner of the collision, useful when the object needs to be accessed by other colliders.
     on_triggered: Callable[[list[str], int, bool], None] | None
         Callback for handling collision events. This is called every time the collider enters or exits another.
         Takes three parameters: a list of collision tags, the object id of the other collider and whether the collision is beginning (entering) or ending (exiting).
@@ -67,6 +69,7 @@ class CollisionNode(PositionNode):
         "method",
         "sensor",
         "shape",
+        "owner",
         "on_triggered",
         "collisions",
         "in_collisions",
@@ -76,6 +79,7 @@ class CollisionNode(PositionNode):
     def __init__(
         self,
         shape: CollisionShape,
+        owner: PositionNode | None = None,
         x: float = 0,
         y: float = 0,
         active_tags: list[str] = [],
@@ -98,7 +102,8 @@ class CollisionNode(PositionNode):
         self.method: CollisionMethod = collision_method
         self.sensor: bool = sensor
         self.shape: CollisionShape = shape
-        self.on_triggered: Callable[[list[str], int, bool], None] | None = on_triggered
+        self.owner: PositionNode | None = owner
+        self.on_triggered: Callable[[list[str], CollisionNode, bool], None] | None = on_triggered
 
         self.collisions: set[CollisionNode] = set[CollisionNode]()
         self.in_collisions: set[CollisionNode] = set[CollisionNode]()

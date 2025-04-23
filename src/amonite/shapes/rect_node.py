@@ -36,6 +36,7 @@ class RectNode(ShapeNode):
             group = pyglet.graphics.Group(order = int(z)),
             batch = batch
         )
+        self.__shape.z = z
         self.__shape.anchor_position = (anchor_x * GLOBALS[Keys.SCALING], anchor_y * GLOBALS[Keys.SCALING])
 
     def delete(self) -> None:

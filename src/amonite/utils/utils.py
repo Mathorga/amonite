@@ -135,11 +135,18 @@ def intersect_segment_rect(
     if position.y <= rect.center.y:
         division_threshold_y = -division_threshold_y
 
+    delta_x: float = delta.x
+    delta_y: float = delta.y
     if delta.x == 0:
-        delta.x = division_threshold_x
+        delta_x = division_threshold_x
 
     if delta.y == 0:
-        delta.y = division_threshold_y
+        delta_y = division_threshold_y
+
+    delta = pm.Vec2(
+        delta_x,
+        delta_y
+    )
 
     # Cache division in order not to waste time computing them multiple times.
     scale_x = 1.0 / delta.x
@@ -175,16 +182,24 @@ def intersect_segment_rect(
     hit.time = clamp(near_time, 0, 1)
 
     if near_time_x > near_time_y:
-        hit.normal.x = -math.copysign(1.0, delta.x)
-        hit.normal.y = 0
+        hit.normal = pm.Vec2(
+            -math.copysign(1.0, delta.x),
+            0.0
+        )
     else:
-        hit.normal.x = 0
-        hit.normal.y = -math.copysign(1.0, delta.y)
+        hit.normal = pm.Vec2(
+            0.0,
+            -math.copysign(1.0, delta.y)
+        )
 
-    hit.delta.x = (1.0 - hit.time) * -delta.x
-    hit.delta.y = (1.0 - hit.time) * -delta.y
-    hit.position.x = position.x + delta.x * hit.time
-    hit.position.y = position.y + delta.y * hit.time
+    hit.delta = pm.Vec2(
+        (1.0 - hit.time) * -delta.x,
+        (1.0 - hit.time) * -delta.y
+    )
+    hit.position = pm.Vec2(
+        position.x + delta.x * hit.time,
+        position.y + delta.y * hit.time
+    )
 
     return hit
 
@@ -208,16 +223,32 @@ def intersect_rect_rect(
     hit = CollisionHit(rect)
     if px < py:
         sx = math.copysign(1.0, dx)
-        hit.delta.x = px * sx
-        hit.normal.x = sx
-        hit.position.x = rect.center.x + (rect.half_size.x * sx)
-        hit.position.y = collider.center.y
+        hit.delta = pm.Vec2(
+            px * sx,
+            hit.delta.y
+        )
+        hit.normal = pm.Vec2(
+            sx,
+            hit.normal.y
+        )
+        hit.position = pm.Vec2(
+            rect.center.x + (rect.half_size.x * sx),
+            collider.center.y
+        )
     else:
         sy = math.copysign(1.0, dy)
-        hit.delta.y = py * sy
-        hit.normal.y = sy
-        hit.position.x = collider.center.x
-        hit.position.y = rect.center.y + (rect.half_size.y * sy)
+        hit.delta = pm.Vec2(
+            hit.delta.x,
+            py * sy
+        )
+        hit.normal = pm.Vec2(
+            hit.normal.x,
+            sy
+        )
+        hit.position = pm.Vec2(
+            collider.center.x,
+            rect.center.y + (rect.half_size.y * sy)
+        )
 
     return hit
 
@@ -515,7 +546,7 @@ def circle_rect_solve(
     nearest_y = max(y2, min(y1, y2 + h2))    
     dist = pm.Vec2(x1 - nearest_x, y1 - nearest_y)
 
-    penetration_depth = r1 - dist.mag
+    penetration_depth = r1 - dist.length()
     penetration_vector = dist.from_magnitude(penetration_depth)
     return (penetration_vector.x, penetration_vector.y)
 

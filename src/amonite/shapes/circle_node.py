@@ -7,8 +7,9 @@ from amonite.shapes.shape_node import ShapeNode
 class CircleNode(ShapeNode):
     def __init__(
         self,
-        x: float = 0,
-        y: float = 0,
+        x: float = 0.0,
+        y: float = 0.0,
+        z: float = 0.0,
         radius: int = 0,
         color: tuple = (0x00, 0x00, 0x00, 0xFF),
         batch: Optional[pyglet.graphics.Batch] = None
@@ -16,6 +17,7 @@ class CircleNode(ShapeNode):
         super().__init__(
             x = x,
             y = y,
+            z = z,
             color = color
         )
 
@@ -28,6 +30,7 @@ class CircleNode(ShapeNode):
             color = color,
             batch = batch
         )
+        self.__shape.z = z
 
     def delete(self) -> None:
         self.__shape.delete()

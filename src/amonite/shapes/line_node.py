@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional
 import pyglet
 
 from amonite.settings import GLOBALS, Keys
@@ -11,11 +11,17 @@ class LineNode(ShapeNode):
         color: tuple[int, int, int, int] = (0xFF, 0xFF, 0xFF, 0xFF),
         x: float = 0.0,
         y: float = 0.0,
+        z: float = 0.0,
         delta_x: float = 0.0,
         delta_y: float = 0.0,
         batch: Optional[pyglet.graphics.Batch] = None
     ) -> None:
-        super().__init__(x, y, color)
+        super().__init__(
+            x = x,
+            y = y,
+            z = z,
+            color = color
+        )
 
         self.delta_x = delta_x
         self.delta_y = delta_y
@@ -26,9 +32,10 @@ class LineNode(ShapeNode):
             x2 = (x + delta_x) * GLOBALS[Keys.SCALING],
             y2 = (y + delta_y) * GLOBALS[Keys.SCALING],
             color = color,
-            width = 1 * GLOBALS[Keys.SCALING],
+            thickness = 1 * GLOBALS[Keys.SCALING],
             batch = batch
         )
+        self.__shape.z = z
 
         # self.__shape = pyglet.shapes.Line(
         #     x = -1000 * GLOBALS[Builtins.SCALING],

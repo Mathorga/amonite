@@ -1,0 +1,4 @@
+pkginfo==1.12.0
+packaging==24.2
+build==1.2.2
+twine==6.1.0

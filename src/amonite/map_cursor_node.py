@@ -123,7 +123,7 @@ class MapCursorNode(PositionNode):
             if self.__move_modifier:
                 movement *= self.__fast_speed
 
-            if movement.mag > 0.0:
+            if movement.length() > 0.0:
                 self.set_position((
                     self.x + int(movement.x * self.__tile_width),
                     self.y + int(movement.y * self.__tile_height)
@@ -139,7 +139,7 @@ class MapCursorNode(PositionNode):
             self.__child.update(dt)
 
     def __update_cam_target(self, dt):
-        cam_target_vec = pyglet.math.Vec2.from_polar(self.__cam_target_distance * self.__look_input.mag, self.__look_input.heading)
+        cam_target_vec = pyglet.math.Vec2.from_polar(self.__cam_target_distance * self.__look_input.length(), self.__look_input.heading)
         self.__cam_target.set_position((
             self.x + self.__cam_target_offset[0] + cam_target_vec.x,
             self.y + self.__cam_target_offset[1] + cam_target_vec.y,

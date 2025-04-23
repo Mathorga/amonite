@@ -63,7 +63,7 @@ class CursorInputHandler(Node):
         if movement_ended:
             self.__elapsed_kick = 0.0
 
-        if move_input.mag > 0.0:
+        if move_input.length() > 0.0:
             self.__elapsed_kick += dt
             self.__elapsed_step += dt
 
