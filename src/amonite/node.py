@@ -62,6 +62,9 @@ class Node:
 
 class PositionNode(Node):
     __slots__ = (
+        "start_x",
+        "start_y",
+        "start_z",
         "x",
         "y",
         "z"
@@ -74,9 +77,12 @@ class PositionNode(Node):
         z: float = 0.0
     ) -> None:
         super().__init__()
-        self.x = x
-        self.y = y
-        self.z = z
+        self.start_x: float = x
+        self.start_y: float = y
+        self.start_z: float = z
+        self.x: float = x
+        self.y: float = y
+        self.z: float = z
 
     def set_position(
         self,
@@ -90,8 +96,14 @@ class PositionNode(Node):
 
         # Update all components positions.
         for component in self.components:
-            if issubclass(type(component), PositionNode):
-                component.set_position(position = position, z = z) # type: ignore
+            if isinstance(component, PositionNode):
+                component.set_position(
+                    position = (
+                        self.x + component.start_x,
+                        self.y + component.start_y
+                    ),
+                    z = self.z + component.start_z
+                )
 
     def get_position(self) -> tuple[float, float]:
         return (round(self.x, GLOBALS[Keys.FLOAT_ROUNDING]), round(self.y, GLOBALS[Keys.FLOAT_ROUNDING]))

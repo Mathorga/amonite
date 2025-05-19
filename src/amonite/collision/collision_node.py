@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Callable
+from typing import Any, Callable
 
 from amonite.collision.collision_shape import CollisionShape
 from amonite.node import PositionNode
@@ -88,7 +88,8 @@ class CollisionNode(PositionNode):
         collision_method: CollisionMethod = CollisionMethod.ACTIVE,
         sensor: bool = False,
         color: tuple[int, int, int, int] | None = None,
-        on_triggered: Callable[[list[str], int, bool], None] | None = None
+        # Here "Any" is needed in order to avoid circular dependencies, since it should be "CollisionNode".
+        on_triggered: Callable[[list[str], Any, bool], None] | None = None
     ) -> None:
         super().__init__(x, y)
 
