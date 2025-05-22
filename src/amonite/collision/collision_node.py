@@ -110,6 +110,9 @@ class CollisionNode(PositionNode):
         self.in_collisions: set[CollisionNode] = set[CollisionNode]()
         self.out_collisions: set[CollisionNode] = set[CollisionNode]()
 
+        # Store shape as component.
+        self.add_component(self.shape)
+
         # Set shape color.
         if color is not None:
             self.shape.set_color(color = color)
@@ -120,15 +123,15 @@ class CollisionNode(PositionNode):
         if self.shape is not None:
             self.shape.delete()
 
-    def set_position(
-        self,
-        position: tuple[float, float],
-        z: float | None = None
-    ) -> None:
-        super().set_position(position)
+    # def set_position(
+    #     self,
+    #     position: tuple[float, float],
+    #     z: float | None = None
+    # ) -> None:
+    #     super().set_position(position)
 
-        if self.shape is not None:
-            self.shape.set_position(position = position)
+    #     if self.shape is not None:
+    #         self.shape.set_position(position = position)
 
     def get_velocity(self) -> tuple[float, float]:
         return (self.velocity_x, self.velocity_y)

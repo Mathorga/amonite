@@ -3,7 +3,6 @@ import pyglet.math as pm
 
 from amonite.node import PositionNode
 from amonite.shapes.circle_node import CircleNode
-from amonite.shapes.line_node import LineNode
 from amonite.shapes.rect_node import RectNode
 from amonite.shapes.shape_node import ShapeNode
 import amonite.utils.utils as utils
@@ -28,24 +27,20 @@ class CollisionShape(PositionNode):
         self.color: tuple[int, int, int, int] = color
 
         self.render_shape: ShapeNode | None = None
-        self.velocity_shape: LineNode | None = None
 
-    def set_position(
-        self,
-        position: tuple[float, float],
-        z: float | None = None
-    ) -> None:
-        """
-        Sets the shape position.
-        """
+    # def set_position(
+    #     self,
+    #     position: tuple[float, float],
+    #     z: float | None = None
+    # ) -> None:
+    #     """
+    #     Sets the shape position.
+    #     """
 
-        super().set_position(position, z)
+    #     super().set_position(position, z)
 
-        if self.render_shape is not None:
-            self.render_shape.set_position(position)
-
-        if self.velocity_shape is not None:
-            self.velocity_shape.set_position(position)
+    #     if self.render_shape is not None:
+    #         self.render_shape.set_position(position)
 
     def set_velocity(
         self,
@@ -58,9 +53,6 @@ class CollisionShape(PositionNode):
         self.velocity_x = velocity[0]
         self.velocity_y = velocity[1]
 
-        if self.velocity_shape is not None:
-            self.velocity_shape.set_delta(velocity)
-
     def put_velocity(
         self,
         velocity: tuple[float, float]
@@ -71,9 +63,6 @@ class CollisionShape(PositionNode):
 
         self.velocity_x += velocity[0]
         self.velocity_y += velocity[1]
-
-        if self.velocity_shape is not None:
-            self.velocity_shape.set_delta((self.velocity_shape.delta_x + velocity[0], self.velocity_shape.delta_y + velocity[1]))
 
     def set_color(self, color: tuple[int, int, int, int]) -> None:
         self.color = color
@@ -113,8 +102,9 @@ class CollisionRect(CollisionShape):
 
         if SETTINGS[Keys.DEBUG] and SETTINGS[Keys.SHOW_COLLISIONS]:
             self.render_shape = RectNode(
-                x = x,
-                y = y,
+                x = 0.0,
+                y = 0.0,
+                z = 0.0,
                 width = width,
                 height = height,
                 anchor_x = anchor_x,
@@ -122,15 +112,7 @@ class CollisionRect(CollisionShape):
                 color = self.color,
                 batch = batch
             )
-
-            self.velocity_shape = LineNode(
-                x = x,
-                y = y,
-                delta_x = self.velocity_x,
-                delta_y = self.velocity_y,
-                color = FREE_COLOR,
-                batch = batch
-            )
+            self.add_component(self.render_shape)
 
     def get_collision_bounds(self):
         return (

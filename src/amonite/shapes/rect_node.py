@@ -52,13 +52,13 @@ class RectNode(ShapeNode):
         position: tuple[float, float],
         z: Optional[float] = None
     ) -> None:
-        super().set_position(position)
+        super().set_position(
+            position = position,
+            z = z
+        )
 
         self.__shape.x = position[0] * GLOBALS[Keys.SCALING]
         self.__shape.y = position[1] * GLOBALS[Keys.SCALING]
-
-        if z is not None:
-            self.z = z
 
     def get_bounds(self) -> tuple[float, float, float, float]:
         """

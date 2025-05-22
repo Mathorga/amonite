@@ -18,6 +18,7 @@ class Node:
         """
         Adds a component to self.
         """
+
         self.components.append(component)
 
     def update(
@@ -94,7 +95,7 @@ class PositionNode(Node):
         if z is not None:
             self.z = z
 
-        # Update all components positions.
+        # Update all components' positions.
         for component in self.components:
             if isinstance(component, PositionNode):
                 component.set_position(
