@@ -1,4 +1,3 @@
-import json
 from typing import Optional, Sequence
 import xml.etree.ElementTree as xml
 import pyglet
@@ -231,45 +230,6 @@ class TilemapNode(PositionNode):
                 z_offset = 0 if "rat" in layer[0] else z_offset + spacing * (len(layers) - layer_index),
                 batch = batch
             ) for layer_index, layer in enumerate(layers)
-        ]
-
-    @staticmethod
-    def from_tmj_file(
-        source: str,
-        tilesets_path: str,
-        x: float = 0,
-        y: float = 0,
-    ) -> list:
-        """
-        Constructs a new tilemaps list from the given TMJ (JSON) file.
-        Returns a tilemap for each layer.
-        WARNING: This method is not complete anymore, don't use!
-        """
-
-        data: dict
-
-        # Load TMJ file.
-        with open(file = f"{pyglet.resource.path[0]}/{source}", mode = "r", encoding = "UTF8") as content:
-            data = json.load(content)
-
-        # Extract a tileset from all the given file.
-        tileset = Tileset(
-            sources = [f"{tilesets_path if tilesets_path is not None else 'tilesets/rughai/'}{ts.attrib['source'].split('/')[-1].split('.')[0]}.png" for ts in tilemap_tilesets],
-            tile_width = data["tilewidth"],
-            tile_height = data["tileheight"]
-        )
-
-        tilemap_layers = data["layers"]
-
-        return [
-            TilemapNode(
-                tileset = tileset,
-                data = [i - 1 for i in layer["data"]],
-                map_width = data["width"],
-                map_height = data["height"],
-                x = x,
-                y = y,
-            ) for layer in tilemap_layers
         ]
 
     def get_bounding_box(self):

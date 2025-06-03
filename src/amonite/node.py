@@ -85,6 +85,16 @@ class PositionNode(Node):
         self.y: float = y
         self.z: float = z
 
+    def add_component(self, component) -> None:
+        """
+        Adds a component to self and sets its position.
+        """
+
+        super().add_component(component)
+
+        if isinstance(component, PositionNode):
+            component.set_position(self.get_position())
+
     def set_position(
         self,
         position: tuple[float, float],

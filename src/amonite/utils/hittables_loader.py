@@ -40,24 +40,18 @@ class HittableNode(PositionNode):
 
         # Collider.
         self.__collider: CollisionNode = CollisionNode(
-            x = x,
-            y = y,
             collision_type = CollisionType.STATIC,
             passive_tags = self.tags,
             sensor = sensor,
             color = color,
             shape = CollisionRect(
-                x = x,
-                y = y,
                 width = width,
                 height = height,
                 batch = batch
             )
         )
+        self.add_component(self.__collider)
         controllers.COLLISION_CONTROLLER.add_collider(self.__collider)
-
-    def delete(self) -> None:
-        self.__collider.delete()
 
 class HittablesLoader:
     @staticmethod

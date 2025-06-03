@@ -1,8 +1,9 @@
 import pyglet
 
 from amonite import controllers
-from amonite.collision.collision_node import CollisionNode, CollisionType
-from amonite.collision.collision_shape import CollisionCircle, CollisionRect
+from amonite.collision.collision_node import CollisionType
+from amonite.collision.collision_node import CollisionNode
+from amonite.collision.collision_shape import CollisionRect
 from amonite.node import PositionNode
 
 WALL_COLOR: tuple[int, int, int, int] = (0xFF, 0x7F, 0xFF, 0x7F)
@@ -25,20 +26,18 @@ class WallNode(PositionNode):
 
         # Collider.
         self.__collider = CollisionNode(
-            x = x,
-            y = y,
+            # x = x,
+            # y = y,
             collision_type = CollisionType.STATIC,
             passive_tags = self.tags,
             color = WALL_COLOR,
             shape = CollisionRect(
-                x = x,
-                y = y,
+                # x = x,
+                # y = y,
                 width = width,
                 height = height,
                 batch = batch
             )
         )
+        self.add_component(self.__collider)
         controllers.COLLISION_CONTROLLER.add_collider(self.__collider)
-
-    def delete(self) -> None:
-        self.__collider.delete()
