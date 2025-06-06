@@ -108,7 +108,7 @@ class MapCursorNode(PositionNode):
     def __fetch_input(self):
         if self.__controls_enabled:
             # Allow the user to look around.
-            self.__look_input = controllers.INPUT_CONTROLLER.get_aim_vec().limit(1.0)
+            self.__look_input = controllers.INPUT_CONTROLLER.get_aim_vec()
 
             self.__move_modifier = controllers.INPUT_CONTROLLER.get_modifier()
 
@@ -139,7 +139,7 @@ class MapCursorNode(PositionNode):
             self.__child.update(dt)
 
     def __update_cam_target(self, dt):
-        cam_target_vec = pyglet.math.Vec2.from_polar(self.__cam_target_distance * self.__look_input.length(), self.__look_input.heading)
+        cam_target_vec = pyglet.math.Vec2.from_polar(self.__look_input.heading(), self.__cam_target_distance * self.__look_input.length())
         self.__cam_target.set_position((
             self.x + self.__cam_target_offset[0] + cam_target_vec.x,
             self.y + self.__cam_target_offset[1] + cam_target_vec.y,
