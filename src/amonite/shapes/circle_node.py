@@ -40,7 +40,11 @@ class CircleNode(ShapeNode):
 
         self.__shape.color = color
 
-    def set_position(self, position: tuple[int, int]) -> None:
+    def set_position(
+        self,
+        position: tuple[int, int],
+        z: float | None = None
+    ) -> None:
         self.x = position[0]
         self.__shape.x = self.x * GLOBALS[Keys.SCALING]
 
