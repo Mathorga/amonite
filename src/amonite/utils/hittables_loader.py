@@ -106,7 +106,7 @@ class HittablesLoader:
                     y = position[1],
                     width = int(size[0]),
                     height = size[1],
-                    sensor = element["sensor"],
+                    sensor = element["sensor"] if "sensor" in element.keys() else False,
                     tags = element["tags"],
                     batch = batch
                 ))
