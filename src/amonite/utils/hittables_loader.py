@@ -138,8 +138,8 @@ class HittablesLoader:
             element: dict[str, Any] = {
                 "tags": key[0].split(","),
                 "sensor": key[1],
-                "positions": list(map(lambda w: f"{w.x},{w.y}", value)),
-                "sizes": list(map(lambda w: f"{w.width},{w.height}", value)),
+                "positions": list(map(lambda w: f"{int(w.x)},{int(w.y)}", value)),
+                "sizes": list(map(lambda w: f"{int(w.width)},{int(w.height)}", value)),
             }
             result.append(element)
 
