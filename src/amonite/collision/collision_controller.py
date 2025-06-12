@@ -121,4 +121,5 @@ class CollisionController:
         Removes the given collider from the list, effectively preventing it from triggering collisions.
         """
 
-        self.__colliders[collider.type].remove(collider)
+        if collider in self.__colliders[collider.type]:
+            self.__colliders[collider.type].remove(collider)
