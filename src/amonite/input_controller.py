@@ -240,7 +240,10 @@ class InputController:
         pass
 
     def __exit__(self, exception_type, exception_value, traceback):
+        # Clear all keyboard key and controllers' button presses.
         self.key_presses.clear()
+        for controller_presses in self.button_presses:
+            controller_presses.clear()
 
     # ----------------------------------------------------------------------
     # Getters.

@@ -304,6 +304,7 @@ class SceneNode(Node):
         Adds the provided child to the scene.
         if cam_target is True, then the child has to be a PositionNode.
         """
+
         if cam_target:
             # Make sure the given child is actually a position node, otherwise it can't be a cam_target.
             assert isinstance(child, PositionNode)
@@ -315,7 +316,9 @@ class SceneNode(Node):
                     self.__cam_target.y * GLOBALS[Keys.SCALING] - self.get_scaled_view_size()[1] / 2,
                 )
 
-        self.__children.append(child)
+        # Only add the provided child if not already added.
+        if child not in self.__children:
+            self.__children.append(child)
 
     def remove_child(self, child: Node | PositionNode):
         """
