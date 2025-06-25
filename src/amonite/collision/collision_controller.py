@@ -114,7 +114,8 @@ class CollisionController:
         self.__handle_collisions()
 
     def clear(self) -> None:
-        self.__colliders.clear()
+        self.__colliders[CollisionType.STATIC].clear()
+        self.__colliders[CollisionType.DYNAMIC].clear()
 
     def remove_collider(self, collider: CollisionNode):
         """
