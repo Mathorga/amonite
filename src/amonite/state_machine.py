@@ -4,7 +4,7 @@ class State ():
     This class cannot be used as is, you must always define a specialization through inheritance.
     """
 
-    __slots__ = ()
+    __slots__: tuple = ()
 
     def start(self) -> None:
         """
@@ -52,7 +52,7 @@ class StateMachine:
     This class can be used as-is or specialized through inheritance.
     """
 
-    __slots__ = (
+    __slots__: tuple = (
         "states",
         "current_key"
     )

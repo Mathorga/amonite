@@ -30,7 +30,7 @@ class Keys(str, Enum):
     SCALING = "scaling"
     FLOAT_ROUNDING = "float_rounding"
 
-SETTINGS = {
+SETTINGS: dict[str, bool | float | int | str] = {
     # Debug.
     Keys.DEBUG: True,
     Keys.SHOW_COLLISIONS: True,
@@ -66,13 +66,13 @@ SETTINGS = {
     Keys.SFX: True
 }
 
-GLOBALS = {
+GLOBALS: dict[str, int | str] = {
     Keys.PLATFORM: "",
     Keys.SCALING: 1,
     Keys.FLOAT_ROUNDING: 5
 }
 
-def load_settings(source: str):
+def load_settings(source: str) -> None:
     data: dict
 
     # Load JSON file.

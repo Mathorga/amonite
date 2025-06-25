@@ -65,10 +65,10 @@ class Upscaler:
         self.height: int = height
 
         # On retina Macs everything is rendered 4x-zoomed for some reason. compensate for this using a platform scaling.
-        self.platform_scaling: float = 0.25 if "macOS" in GLOBALS[Keys.PLATFORM] else 1.0
+        self.platform_scaling: float = 0.25 if "macOS" in str(GLOBALS[Keys.PLATFORM]) else 1.0
 
-        self._target_area = (0, 0, 0, 0)
-        self._aspect = (0, 0)
+        self._target_area: tuple[int, int, int, int] = (0, 0, 0, 0)
+        self._aspect: tuple[float, float] = (0.0, 0.0)
 
         self.window.push_handlers(self)
 

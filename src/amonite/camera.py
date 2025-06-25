@@ -98,8 +98,8 @@ class Camera:
         """ Move axis direction with scroll_speed.
             Example: Move left -> move(-1, 0)
          """
-        self.offset_x += self.scroll_speed * axis_x
-        self.offset_y += self.scroll_speed * axis_y
+        self.offset_x += int(self.scroll_speed * axis_x)
+        self.offset_y += int(self.scroll_speed * axis_y)
 
     def begin(self):
         # Set the current camera offset so you can draw your scene.

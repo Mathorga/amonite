@@ -63,25 +63,25 @@ class SceneNode(Node):
         curtain_z: float = 0.0,
         cam_bounds: Bounds | None = None
     ):
-        self.__view_width = view_width
-        self.__view_height = view_height
+        self.__view_width: int = view_width
+        self.__view_height: int = view_height
 
-        self.__on_scene_end = on_scene_end
-        self.__on_scene_start = on_scene_start
-        self.world_batch = pyglet.graphics.Batch()
-        self.ui_batch = pyglet.graphics.Batch()
+        self.__on_scene_end: Callable[[], None] | None = on_scene_end
+        self.__on_scene_start: Callable[[], None] | None = on_scene_start
+        self.world_batch: pyglet.graphics.Batch = pyglet.graphics.Batch()
+        self.ui_batch: pyglet.graphics.Batch = pyglet.graphics.Batch()
 
         # Tells whether the scene should be updating its children or not.
         self.__frozen: bool = False
 
         # Create a new camera.
-        self.__camera = Camera(
+        self.__camera: Camera | None = Camera(
             window = window
         )
-        self.__default_cam_speed = default_cam_speed
-        self.__cam_speed = default_cam_speed
-        self.__cam_target = None
-        self.__cam_bounds = cam_bounds
+        self.__default_cam_speed: float = default_cam_speed
+        self.__cam_speed: float = default_cam_speed
+        self.__cam_target: PositionNode | None = None
+        self.__cam_bounds: Bounds | None = cam_bounds
         self.__cam_shake: float = 0.0
         self.__cam_impulse: pyglet.math.Vec2 = pyglet.math.Vec2(0.0, 0.0)
         self.__cam_impulse_damp: float = 1.0
@@ -96,13 +96,13 @@ class SceneNode(Node):
                 y = view_height - 5,
                 width = view_width,
                 color = (0xFF, 0xFF, 0xFF, 0xFF),
-                font_name = SETTINGS[Keys.FONT_NAME],
+                font_name = str(SETTINGS[Keys.FONT_NAME]),
                 text = title,
                 batch = self.ui_batch
             )
             self.add_child(label)
 
-        self.__curtain = RectNode(
+        self.__curtain: RectNode | None = RectNode(
             x = 0.0,
             y = 0.0,
             z = curtain_z,
@@ -114,12 +114,12 @@ class SceneNode(Node):
         self.__curtain_speed: float = curtain_speed
         self.__curtain_opening: bool = True
         self.__curtain_closing: bool = False
-        self.__curtain.set_opacity(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
+        self.__curtain.set_alpha(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
 
     def get_scaled_view_size(self) -> tuple[int, int]:
         return (
-            self.__view_width * GLOBALS[Keys.SCALING],
-            self.__view_height * GLOBALS[Keys.SCALING]
+            int(self.__view_width * GLOBALS[Keys.SCALING]),
+            int(self.__view_height * GLOBALS[Keys.SCALING])
         )
 
     def draw(self):
@@ -148,7 +148,7 @@ class SceneNode(Node):
                 self.__curtain_opacity_fill = 0.0
 
             if self.__curtain is not None:
-                self.__curtain.set_opacity(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
+                self.__curtain.set_alpha(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
 
         if self.__curtain_closing:
             self.__curtain_opacity_fill += self.__curtain_speed * dt
@@ -161,7 +161,7 @@ class SceneNode(Node):
                     self.__on_scene_end()
 
             if self.__curtain is not None:
-                self.__curtain.set_opacity(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
+                self.__curtain.set_alpha(int(Tween.compute(self.__curtain_opacity_fill, Tween.expInOut) * 0xFF))
 
     def __update_camera(self, dt):
         if self.__camera is not None and self.__cam_target is not None:
@@ -172,8 +172,8 @@ class SceneNode(Node):
 
             # Compute camera movement from camera target.
             camera_movement: pm.Vec2 = pm.Vec2(
-                (self.__cam_target.x * GLOBALS[Keys.SCALING] - scaled_view_size[0] / 2 - self.__camera.position[0]) * self.__cam_speed * dt,
-                (self.__cam_target.y * GLOBALS[Keys.SCALING] - scaled_view_size[1] / 2 - self.__camera.position[1]) * self.__cam_speed * dt
+                (self.__cam_target.x * float(GLOBALS[Keys.SCALING]) - scaled_view_size[0] / 2 - self.__camera.position[0]) * self.__cam_speed * dt,
+                (self.__cam_target.y * float(GLOBALS[Keys.SCALING]) - scaled_view_size[1] / 2 - self.__camera.position[1]) * self.__cam_speed * dt
             ) + camera_shake + self.__cam_impulse
 
             updated_x: float = self.__camera.position[0] + camera_movement.x
@@ -181,18 +181,26 @@ class SceneNode(Node):
 
             if self.__cam_bounds is not None and not (SETTINGS[Keys.DEBUG] and SETTINGS[Keys.FREE_CAM_BOUNDS]):
                 # Apply bounds to camera movement by limiting updated position.
-                if self.__cam_bounds.top is not None and self.__cam_bounds.top * GLOBALS[Keys.SCALING] < updated_y + self.__view_height * GLOBALS[Keys.SCALING]:
-                    updated_y = self.__cam_bounds.top * GLOBALS[Keys.SCALING] - self.__view_height * GLOBALS[Keys.SCALING]
-                if self.__cam_bounds.bottom is not None and self.__cam_bounds.bottom * GLOBALS[Keys.SCALING] > updated_y:
-                    updated_y = self.__cam_bounds.bottom * GLOBALS[Keys.SCALING]
-                if self.__cam_bounds.left is not None and self.__cam_bounds.left * GLOBALS[Keys.SCALING] > updated_x:
-                    updated_x = self.__cam_bounds.left * GLOBALS[Keys.SCALING]
-                if self.__cam_bounds.right is not None and self.__cam_bounds.right * GLOBALS[Keys.SCALING] < updated_x + self.__view_width * GLOBALS[Keys.SCALING]:
-                    updated_x = self.__cam_bounds.right * GLOBALS[Keys.SCALING] - self.__view_width * GLOBALS[Keys.SCALING]
+                if self.__cam_bounds.top is not None and self.__cam_bounds.top * float(GLOBALS[Keys.SCALING]) < updated_y + self.__view_height * float(GLOBALS[Keys.SCALING]):
+                    updated_y = self.__cam_bounds.top * float(GLOBALS[Keys.SCALING]) - self.__view_height * float(GLOBALS[Keys.SCALING])
+                if self.__cam_bounds.bottom is not None and self.__cam_bounds.bottom * float(GLOBALS[Keys.SCALING]) > updated_y:
+                    updated_y = self.__cam_bounds.bottom * float(GLOBALS[Keys.SCALING])
+                if self.__cam_bounds.left is not None and self.__cam_bounds.left * float(GLOBALS[Keys.SCALING]) > updated_x:
+                    updated_x = self.__cam_bounds.left * float(GLOBALS[Keys.SCALING])
+                if self.__cam_bounds.right is not None and self.__cam_bounds.right * float(GLOBALS[Keys.SCALING]) < updated_x + self.__view_width * float(GLOBALS[Keys.SCALING]):
+                    updated_x = self.__cam_bounds.right * float(GLOBALS[Keys.SCALING]) - self.__view_width * float(GLOBALS[Keys.SCALING])
 
             # Damp down impulse.
             if self.__cam_impulse.length() > 0.0:
-                self.__cam_impulse = self.__cam_impulse.from_magnitude(magnitude = round(self.__cam_impulse.length() - self.__cam_impulse_damp, GLOBALS[Keys.FLOAT_ROUNDING]))
+                # Reduce [self.cam_impulse] length by [self.__cam_impulse_damp]. Here the formula is simplified, so this is the full version:
+                # result = curr_len - damp
+                # result = curr_len * x
+                # curr_len - damp = curr_len * x
+                # x = (curr_len - damp) / curr_len
+                # This can be dangerous though, because rounding is not guaranteed. Keep using the old method for now.
+                # self.__cam_impulse *= (self.__cam_impulse.length() - self.__cam_impulse_damp) / self.__cam_impulse.length()
+                damped_length: float = round(self.__cam_impulse.length() - self.__cam_impulse_damp, int(GLOBALS[Keys.FLOAT_ROUNDING]))
+                self.__cam_impulse = pm.Vec2.from_polar(length = damped_length, angle = self.__cam_impulse.heading())
             if self.__cam_impulse.length() < 0.0:
                 self.__cam_impulse = pyglet.math.Vec2(0.0, 0.0)
 
@@ -312,8 +320,8 @@ class SceneNode(Node):
             self.__cam_target = child
             if self.__camera is not None:
                 self.__camera.position = (
-                    self.__cam_target.x * GLOBALS[Keys.SCALING] - self.get_scaled_view_size()[0] / 2,
-                    self.__cam_target.y * GLOBALS[Keys.SCALING] - self.get_scaled_view_size()[1] / 2,
+                    self.__cam_target.x * float(GLOBALS[Keys.SCALING]) - self.get_scaled_view_size()[0] / 2,
+                    self.__cam_target.y * float(GLOBALS[Keys.SCALING]) - self.get_scaled_view_size()[1] / 2,
                 )
 
         # Only add the provided child if not already added.

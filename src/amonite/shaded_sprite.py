@@ -1,3 +1,4 @@
+from pyglet.image import ImageData
 import pyglet
 import pyglet.gl as gl
 
@@ -58,12 +59,16 @@ class ShadedSpriteGroup(pyglet.sprite.SpriteGroup):
 
             # Loop through sampler2D uniforms.
             for uniform_index, uniform in enumerate(sampler_2d_uniforms):
+                if self.samplers_2d is None:
+                    continue
+
                 # Make sure self has an related uniform value.
                 if uniform.name in self.samplers_2d.keys():
                     # Prepare the texture to be read by the shader.
-                    image = self.samplers_2d[uniform.name]
-                    width, height = image.width, image.height
-                    image_data = image.get_data("RGB", width * 3)
+                    image: ImageData = self.samplers_2d[uniform.name]
+                    width: int = image.width
+                    height: int = image.height
+                    image_data: bytes = image.get_data("RGB", width * 3)
 
                     # Pass the generated texture to GPU memory.
                     gl.glActiveTexture(gl.GL_TEXTURE0 + uniform_index)

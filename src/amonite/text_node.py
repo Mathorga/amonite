@@ -30,14 +30,14 @@ class TextNode(PositionNode):
 
         self.label = pyglet.text.Label(
             text = text,
-            x = x * GLOBALS[Keys.SCALING],
-            y = y * GLOBALS[Keys.SCALING],
+            x = x * float(GLOBALS[Keys.SCALING]),
+            y = y * float(GLOBALS[Keys.SCALING]),
             z = int(z),
             multiline = multiline,
-            width = width * GLOBALS[Keys.SCALING],
-            height = height * GLOBALS[Keys.SCALING] if height is not None else None,
+            width = int(width) * int(GLOBALS[Keys.SCALING]),
+            height = int(height) * int(GLOBALS[Keys.SCALING]) if height is not None else None,
             font_name = font_name,
-            font_size = font_size * GLOBALS[Keys.SCALING],
+            font_size = font_size * float(GLOBALS[Keys.SCALING]),
             align = align,
             anchor_x = anchor_x,
             anchor_y = anchor_y,
@@ -54,13 +54,13 @@ class TextNode(PositionNode):
         z: float | None = None
     ):
         self.x = position[0]
-        self.label.x = position[0] * GLOBALS[Keys.SCALING]
+        self.label.x = position[0] * float(GLOBALS[Keys.SCALING])
 
         self.y = position[1]
-        self.label.y = position[1] * GLOBALS[Keys.SCALING]
+        self.label.y = position[1] * float(GLOBALS[Keys.SCALING])
 
-    def set_opacity(self, opacity: float):
-        self.label.opacity = opacity
+    def set_alpha(self, alpha: int) -> None:
+        self.label.opacity = alpha
 
     def set_color(
         self,
@@ -68,7 +68,7 @@ class TextNode(PositionNode):
     ) -> None:
         self.label.color = color
 
-    def set_text(self, text: str):
+    def set_text(self, text: str) -> None:
         self.label.text = text
 
     def draw(self) -> None:

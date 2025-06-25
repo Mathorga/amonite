@@ -27,7 +27,7 @@ class Benchmark:
             anchor_y = "bottom",
             x = x if x != None else 10,
             y = y if y != None else 10,
-            bold = True,
+            weight = "bold",
             batch = batch
         )
 

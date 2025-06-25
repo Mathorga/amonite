@@ -39,6 +39,7 @@ class MapCursorNode(PositionNode):
             right_keys = [pyglet.window.key.D, pyglet.window.key.RIGHT],
         )
         self.__look_input: pm.Vec2 = pm.Vec2()
+        self.__move_input: pm.Vec2 = pm.Vec2()
         self.__move_modifier: bool = False
 
         # Save child.
@@ -84,7 +85,7 @@ class MapCursorNode(PositionNode):
 
         self.__controls_enabled = True
 
-    def get_child(self) -> PositionNode:
+    def get_child(self) -> PositionNode | None:
         """
         Returns the current cursor child node.
         """

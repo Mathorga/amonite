@@ -117,7 +117,10 @@ class PositionNode(Node):
                 )
 
     def get_position(self) -> tuple[float, float]:
-        return (round(self.x, GLOBALS[Keys.FLOAT_ROUNDING]), round(self.y, GLOBALS[Keys.FLOAT_ROUNDING]))
+        return (
+            round(self.x, int(GLOBALS[Keys.FLOAT_ROUNDING])),
+            round(self.y, int(GLOBALS[Keys.FLOAT_ROUNDING]))
+        )
 
     def get_bounding_box(self) -> tuple[float, float, float, float]:
         return (self.x, self.y, 0.0, 0.0)

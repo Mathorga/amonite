@@ -19,7 +19,7 @@ class InteractionNode(Node):
         self.on_toggle = on_toggle
         self.on_interaction = on_interaction
 
-    def toggle(self, enable: bool):
+    def toggle(self, enable: bool) -> None:
         """
         Activates or deactivates the interaction.
         """
@@ -29,7 +29,7 @@ class InteractionNode(Node):
         if self.on_toggle is not None:
             self.on_toggle(enable)
 
-    def interact(self):
+    def interact(self) -> None:
         """
         Interaction method.
         """

@@ -64,23 +64,23 @@ class DialogNode(PositionNode):
         self.text = TextNode(
             # Start with no text.
             text = "",
-            font_name = SETTINGS[Keys.FONT_NAME],
-            x = SETTINGS[Keys.VIEW_WIDTH] / 2,
-            y = 16,
-            width = SETTINGS[Keys.VIEW_WIDTH] * 0.8,
+            font_name = str(SETTINGS[Keys.FONT_NAME]),
+            x = int(SETTINGS[Keys.VIEW_WIDTH]) / 2,
+            y = 16.0,
+            width = int(SETTINGS[Keys.VIEW_WIDTH]) * 0.8,
             batch = ui_batch
         )
 
         self.next_icon = TextNode(
             text = "",
-            font_name = SETTINGS[Keys.FONT_NAME],
-            x = SETTINGS[Keys.VIEW_WIDTH] - 16,
-            y = 16,
+            font_name = str(SETTINGS[Keys.FONT_NAME]),
+            x = int(SETTINGS[Keys.VIEW_WIDTH]) - 16,
+            y = 16.0,
             multiline = False,
             batch = ui_batch
         )
 
-    def update(self, dt: int) -> None:
+    def update(self, dt: float) -> None:
         if self.interaction.enabled:
             self.elapsed += dt
             if self.elapsed >= self.char_duration:
@@ -92,7 +92,7 @@ class DialogNode(PositionNode):
             self.current_line = 0
             self.current_char = 0
 
-        text = f"{self.lines[self.current_line][0:self.current_char]}"
+        text: str = f"{self.lines[self.current_line][0:self.current_char]}"
 
         # Make the next_icon visible if the current line is ended.
         if self.current_char >= len(self.lines[self.current_line]) and self.current_line < len(self.lines) - 1:
@@ -106,7 +106,7 @@ class DialogNode(PositionNode):
         self.interactor.delete()
         self.text.delete()
 
-    def interact(self):
+    def interact(self) -> None:
         """
         Progresses the dialog to the next line.
         """

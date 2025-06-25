@@ -160,7 +160,7 @@ class InventoryController:
     Holds all inventory data and provides accessors to it.
     """
 
-    __slots__ = (
+    __slots__: tuple = (
         "quicks_count",
         "quicks",
         "current_ammo",

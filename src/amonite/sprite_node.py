@@ -58,14 +58,14 @@ class SpriteNode(PositionNode):
 
         self.sprite = ShadedSprite(
             img = resource,
-            x = x * GLOBALS[Keys.SCALING],
-            y = y * GLOBALS[Keys.SCALING],
+            x = x * float(GLOBALS[Keys.SCALING]),
+            y = y * float(GLOBALS[Keys.SCALING]),
             z = -y if y_sort else z,
             program = shader,
             samplers_2d = samplers_2d,
             batch = batch
         )
-        self.sprite.scale = GLOBALS[Keys.SCALING]
+        self.sprite.scale = float(GLOBALS[Keys.SCALING])
         self.sprite.push_handlers(self)
 
         self.__on_animation_end = on_animation_end
@@ -73,7 +73,7 @@ class SpriteNode(PositionNode):
     def delete(self) -> None:
         self.sprite.delete()
 
-    def get_image(self):
+    def get_image(self) -> pyglet.image.AbstractImage | pyglet.image.animation.Animation:
         return self.sprite.image
 
     def set_position(
@@ -87,8 +87,8 @@ class SpriteNode(PositionNode):
         )
 
         self.sprite.position = (
-            self.x * GLOBALS[Keys.SCALING],
-            self.y * GLOBALS[Keys.SCALING],
+            self.x * float(GLOBALS[Keys.SCALING]),
+            self.y * float(GLOBALS[Keys.SCALING]),
             self.z
         )
 
@@ -124,7 +124,7 @@ class SpriteNode(PositionNode):
         """
         return self.sprite.get_frame_index()
 
-    def on_animation_end(self):
+    def on_animation_end(self) -> None:
         if self.__on_animation_end is not None:
             self.__on_animation_end()
 
@@ -134,15 +134,15 @@ class SpriteNode(PositionNode):
     def get_bounding_box(self):
         if isinstance(self.sprite.image, pyglet.image.TextureRegion):
             return (
-                self.sprite.x - self.sprite.image.anchor_x * GLOBALS[Keys.SCALING],
-                self.sprite.y - self.sprite.image.anchor_y * GLOBALS[Keys.SCALING],
+                self.sprite.x - self.sprite.image.anchor_x * float(GLOBALS[Keys.SCALING]),
+                self.sprite.y - self.sprite.image.anchor_y * float(GLOBALS[Keys.SCALING]),
                 self.sprite.width,
                 self.sprite.height
             )
         elif isinstance(self.sprite.image, pyglet.image.animation.Animation):
             return (
-                self.sprite.x - self.sprite.image.frames[0].image.anchor_x * GLOBALS[Keys.SCALING],
-                self.sprite.y - self.sprite.image.frames[0].image.anchor_y * GLOBALS[Keys.SCALING],
+                self.sprite.x - self.sprite.image.frames[0].image.anchor_x * float(GLOBALS[Keys.SCALING]),
+                self.sprite.y - self.sprite.image.frames[0].image.anchor_y * float(GLOBALS[Keys.SCALING]),
                 self.sprite.width,
                 self.sprite.height
             )
