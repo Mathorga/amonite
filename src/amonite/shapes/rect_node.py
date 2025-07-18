@@ -28,16 +28,16 @@ class RectNode(ShapeNode):
         self.__height = height
 
         self.__shape: pyglet.shapes.Rectangle = pyglet.shapes.Rectangle(
-            x = x * GLOBALS[Keys.SCALING],
-            y = y * GLOBALS[Keys.SCALING],
-            width = width * GLOBALS[Keys.SCALING],
-            height = height * GLOBALS[Keys.SCALING],
+            x = x * float(GLOBALS[Keys.SCALING]),
+            y = y * float(GLOBALS[Keys.SCALING]),
+            width = width * float(GLOBALS[Keys.SCALING]),
+            height = height * float(GLOBALS[Keys.SCALING]),
             color = color,
             group = pyglet.graphics.Group(order = int(z)),
             batch = batch
         )
         self.__shape.z = z
-        self.__shape.anchor_position = (anchor_x * GLOBALS[Keys.SCALING], anchor_y * GLOBALS[Keys.SCALING])
+        self.__shape.anchor_position = (anchor_x * float(GLOBALS[Keys.SCALING]), anchor_y * float(GLOBALS[Keys.SCALING]))
 
     def delete(self) -> None:
         self.__shape.delete()
@@ -57,8 +57,8 @@ class RectNode(ShapeNode):
             z = z
         )
 
-        self.__shape.x = position[0] * GLOBALS[Keys.SCALING]
-        self.__shape.y = position[1] * GLOBALS[Keys.SCALING]
+        self.__shape.x = position[0] * float(GLOBALS[Keys.SCALING])
+        self.__shape.y = position[1] * float(GLOBALS[Keys.SCALING])
 
     def get_bounds(self) -> tuple[float, float, float, float]:
         """
@@ -77,11 +77,11 @@ class RectNode(ShapeNode):
         self.set_position(bounds[:2])
         self.__width = bounds[2]
         self.__height = bounds[3]
-        self.__shape.width = bounds[2] * GLOBALS[Keys.SCALING]
-        self.__shape.height = bounds[3] * GLOBALS[Keys.SCALING]
+        self.__shape.width = bounds[2] * float(GLOBALS[Keys.SCALING])
+        self.__shape.height = bounds[3] * float(GLOBALS[Keys.SCALING])
 
-    def set_opacity(self, opacity: int):
-        self.__shape.opacity = opacity
+    def set_alpha(self, alpha: int):
+        self.__shape.opacity = alpha
 
     def draw(self) -> None:
         self.__shape.draw()

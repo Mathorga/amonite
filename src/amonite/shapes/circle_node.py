@@ -42,14 +42,13 @@ class CircleNode(ShapeNode):
 
     def set_position(
         self,
-        position: tuple[int, int],
+        position: tuple[float, float],
         z: float | None = None
     ) -> None:
-        self.x = position[0]
-        self.__shape.x = self.x * GLOBALS[Keys.SCALING]
+        super().set_position(position, z)
 
-        self.y = position[1]
-        self.__shape.y = self.y * GLOBALS[Keys.SCALING]
+        self.__shape.x = self.x * float(GLOBALS[Keys.SCALING])
+        self.__shape.y = self.y * float(GLOBALS[Keys.SCALING])
 
-    def set_opacity(self, opacity: float):
-        self.__shape.opacity = opacity
+    def set_alpha(self, alpha: int):
+        self.__shape.opacity = alpha

@@ -53,19 +53,19 @@ class CollisionHit:
         self,
         collider: Rect
     ) -> None:
-        self.collider = collider
+        self.collider: Rect = collider
 
         # Point of contact between colliders.
-        self.position = pm.Vec2()
+        self.position: pm.Vec2 = pm.Vec2()
 
         # Vector describing the overlap between colliders.
-        self.delta = pm.Vec2()
+        self.delta: pm.Vec2 = pm.Vec2()
 
         # Surface normal at the point of contact.
-        self.normal = pm.Vec2()
+        self.normal: pm.Vec2 = pm.Vec2()
 
         # Time of intersection, only used with segments intersection (and swept rectangles).
-        self.time = 0.0
+        self.time: float = 0.0
 
 def intersect_point_rect(
     point: pm.Vec2,
@@ -74,29 +74,27 @@ def intersect_point_rect(
     """
     Computes the collision hit between a point and a rectangle.
     """
-    dx = point.x - rect.center.x
-    px = rect.half_size.x - abs(dx)
+    dx: float = point.x - rect.center.x
+    px: float = rect.half_size.x - abs(dx)
     if px <= 0.0:
         return None
     
-    dy = point.y - rect.center.y
-    py = rect.half_size.y - abs(dy)
+    dy: float = point.y - rect.center.y
+    py: float = rect.half_size.y - abs(dy)
     if py <= 0.0:
         return None
 
-    hit = CollisionHit(rect)
+    hit: CollisionHit = CollisionHit(rect)
     if px < py:
-        sx = math.copysign(1.0, dx)
-        hit.delta.x = px * sx
-        hit.normal.x = sx
-        hit.position.x = rect.center.x + (rect.half_size.x * sx)
-        hit.position.y = point.y
+        sx: float = math.copysign(1.0, dx)
+        hit.delta = pm.Vec2(px * sx, hit.delta.y)
+        hit.normal = pm.Vec2(sx, hit.normal.y)
+        hit.position = pm.Vec2(rect.center.x + (rect.half_size.x * sx), point.y)
     else:
-        sy = math.copysign(1.0, dy)
-        hit.delta.y = py * sy
-        hit.normal.y = sy
-        hit.position.x = point.x
-        hit.position.y = rect.center.y + (rect.half_size.y * sy)
+        sy: float = math.copysign(1.0, dy)
+        hit.delta = pm.Vec2(py * sy, hit.delta.y)
+        hit.normal = pm.Vec2(sy, hit.normal.y)
+        hit.position = pm.Vec2(point.x, rect.center.y + (rect.half_size.y * sy))
 
     return hit
 
@@ -542,12 +540,12 @@ def circle_rect_solve(
     w2: float,
     h2: float
 ) -> tuple[float, float]:
-    nearest_x = max(x2, min(x1, x2 + w2))
-    nearest_y = max(y2, min(y1, y2 + h2))    
-    dist = pm.Vec2(x1 - nearest_x, y1 - nearest_y)
+    nearest_x: float = max(x2, min(x1, x2 + w2))
+    nearest_y: float = max(y2, min(y1, y2 + h2))    
+    dist: pm.Vec2 = pm.Vec2(x1 - nearest_x, y1 - nearest_y)
 
-    penetration_depth = r1 - dist.length()
-    penetration_vector = dist.from_magnitude(penetration_depth)
+    penetration_depth: float = r1 - dist.length()
+    penetration_vector: pm.Vec2 = pm.Vec2.from_polar(length = penetration_depth, angle = dist.heading())
     return (penetration_vector.x, penetration_vector.y)
 
 def center_distance(x1, y1, w1, h1, x2, y2, w2, h2) -> tuple[float, float]:

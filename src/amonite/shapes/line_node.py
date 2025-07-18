@@ -27,12 +27,12 @@ class LineNode(ShapeNode):
         self.delta_y = delta_y
 
         self.__shape = pyglet.shapes.Line(
-            x = x * GLOBALS[Keys.SCALING],
-            y = y * GLOBALS[Keys.SCALING],
-            x2 = (x + delta_x) * GLOBALS[Keys.SCALING],
-            y2 = (y + delta_y) * GLOBALS[Keys.SCALING],
+            x = x * float(GLOBALS[Keys.SCALING]),
+            y = y * float(GLOBALS[Keys.SCALING]),
+            x2 = (x + delta_x) * float(GLOBALS[Keys.SCALING]),
+            y2 = (y + delta_y) * float(GLOBALS[Keys.SCALING]),
             color = color,
-            thickness = 1 * GLOBALS[Keys.SCALING],
+            thickness = 1 * float(GLOBALS[Keys.SCALING]),
             batch = batch
         )
         self.__shape.z = z
@@ -56,12 +56,13 @@ class LineNode(ShapeNode):
 
     def set_position(
         self,
-        position: tuple[float, float]
+        position: tuple[float, float],
+        z: float | None = None
     ) -> None:
-        super().set_position(position)
+        super().set_position(position, z)
 
-        self.__shape.x = position[0] * GLOBALS[Keys.SCALING]
-        self.__shape.y = position[1] * GLOBALS[Keys.SCALING]
+        self.__shape.x = position[0] * float(GLOBALS[Keys.SCALING])
+        self.__shape.y = position[1] * float(GLOBALS[Keys.SCALING])
 
     def set_delta(
         self,
@@ -70,11 +71,11 @@ class LineNode(ShapeNode):
         self.delta_x = delta[0]
         self.delta_y = delta[1]
 
-        self.__shape.x2 = (self.x + delta[0]) * GLOBALS[Keys.SCALING]
-        self.__shape.y2 = (self.y + delta[1]) * GLOBALS[Keys.SCALING]
+        self.__shape.x2 = (self.x + delta[0]) * float(GLOBALS[Keys.SCALING])
+        self.__shape.y2 = (self.y + delta[1]) * float(GLOBALS[Keys.SCALING])
 
-    def set_opacity(self, opacity: float):
-        self.__shape.opacity = opacity
+    def set_alpha(self, alpha: int):
+        self.__shape.opacity = alpha
 
     def draw(self) -> None:
         self.__shape.draw()

@@ -303,7 +303,7 @@ class InputController:
         controller_index: int = 0
     ) -> float:
         triggers: dict[str, float] | None = self.triggers[controller_index] if controller_index < len(self.triggers) else None
-        return triggers.get(trigger, 0.0) > 0.0 if triggers is not None else False
+        return triggers.get(trigger, 0.0) if triggers is not None else 0.0
 
     def get_key_vector(
         self,

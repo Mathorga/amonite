@@ -21,5 +21,5 @@ class ShapeNode(PositionNode):
 
         self.color = color
 
-    def set_color(self, color: tuple[int, int, int]):
-        self.color = color
+    def set_color(self, color: tuple[int, int, int]) -> None:
+        self.color = (color[0], color[1], color[2], 0x7F)

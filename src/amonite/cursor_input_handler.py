@@ -5,7 +5,7 @@ from amonite import controllers
 from amonite.node import Node
 
 class CursorInputHandler(Node):
-    __slots__ = (
+    __slots__: tuple = (
         "__movement",
         "__kick_time",
         "__elapsed_kick",

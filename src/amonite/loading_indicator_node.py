@@ -93,8 +93,8 @@ class LoadingIndicatorNode(PositionNode):
             )
 
         # Create shader program from vector and fragment.
-        vert_shader = pyglet.graphics.shader.Shader(pyglet.sprite.vertex_source, "vertex")
-        frag_shader = pyglet.graphics.shader.Shader(fragment_source, "fragment")
+        vert_shader: pyglet.graphics.shader.Shader = pyglet.graphics.shader.Shader(pyglet.sprite.vertex_source, "vertex")
+        frag_shader: pyglet.graphics.shader.Shader = pyglet.graphics.shader.Shader(fragment_source, "fragment")
         self.shader_program = pyglet.graphics.shader.ShaderProgram(vert_shader, frag_shader)
 
         # Pass non sampler uniforms to the shader.
