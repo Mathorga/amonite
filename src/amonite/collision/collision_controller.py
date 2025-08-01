@@ -130,5 +130,5 @@ class CollisionController:
 
         # TODO Trigger out collisions on all other colliders.
         for other in self.__colliders[CollisionType.DYNAMIC]:
-            if collider in other.collisions:
+            if collider in other.collisions and other.on_triggered is not None:
                 other.on_triggered(collider.passive_tags, collider, False)
