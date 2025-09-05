@@ -93,7 +93,10 @@ class PositionNode(Node):
         super().add_component(component)
 
         if isinstance(component, PositionNode):
-            component.set_position(self.get_position())
+            component.set_position(
+                position = (self.x + component.start_x, self.y + component.start_y),
+                z = self.z + component.start_z
+            )
 
     def set_position(
         self,
