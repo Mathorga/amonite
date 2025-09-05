@@ -170,7 +170,7 @@ class CollisionNode(PositionNode):
 
             # Check collision from shape.
             if self.shape is not None:
-                collision_hit = self.shape.swept_collide(other.shape)
+                collision_hit: CollisionHit | None = self.shape.swept_collide(other.shape)
 
             if other not in self.collisions and collision_hit is not None:
                 # Store the colliding sensor.

@@ -52,7 +52,7 @@ class CollisionController:
                         continue
 
                     # Compute collision between actors.
-                    collision_hit = actor.collide(other)
+                    collision_hit: CollisionHit | None = actor.collide(other)
 
                     # Only save collision if it actually happened.
                     if not other.sensor and collision_hit is not None and collision_hit.time < 1.0:
@@ -62,7 +62,7 @@ class CollisionController:
                             if collision_hit.time < nearest_collision.time:
                                 nearest_collision = collision_hit
 
-                actor_position = actor.get_position()
+                actor_position: tuple[float, float] = actor.get_position()
 
                 # Handling collider movement here allows us to check for all collisions before actually moving.
                 if nearest_collision is not None:
@@ -73,8 +73,8 @@ class CollisionController:
                     ))
 
                     # Compute sliding reaction.
-                    x_result = (actor.velocity_x * abs(nearest_collision.normal.y)) * (1.0 - nearest_collision.time)
-                    y_result = (actor.velocity_y * abs(nearest_collision.normal.x)) * (1.0 - nearest_collision.time)
+                    x_result: float = (actor.velocity_x * abs(nearest_collision.normal.y)) * (1.0 - nearest_collision.time)
+                    y_result: float = (actor.velocity_y * abs(nearest_collision.normal.x)) * (1.0 - nearest_collision.time)
 
                     # Set the resulting velocity for the next iteration.
                     actor.set_velocity((x_result, y_result))
@@ -122,5 +122,13 @@ class CollisionController:
         Removes the given collider from the list, effectively preventing it from triggering collisions.
         """
 
-        if collider in self.__colliders[collider.type]:
-            self.__colliders[collider.type].remove(collider)
+        # Just return if the collider is not found.
+        if not collider in self.__colliders[collider.type]:
+            return
+
+        self.__colliders[collider.type].remove(collider)
+
+        # TODO Trigger out collisions on all other colliders.
+        for other in self.__colliders[CollisionType.DYNAMIC]:
+            if collider in other.collisions and other.on_triggered is not None:
+                other.on_triggered(collider.passive_tags, collider, False)
