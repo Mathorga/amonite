@@ -103,10 +103,21 @@ class SpriteNode(PositionNode):
         if y_scale is not None:
             self.sprite.scale_y = y_scale
 
+    def get_image(self) -> pyglet.image.AbstractImage | pyglet.image.animation.Animation:
+        """
+        Returns the currently set sprite image.
+        """
+
+        return self.sprite.image
+
     def set_image(
         self,
-        image: pyglet.image.Texture | pyglet.image.animation.Animation
+        image: pyglet.image.AbstractImage | pyglet.image.animation.Animation
     ) -> None:
+        """
+        Sets the current sprite image to be the one provided.
+        """
+
         self.sprite.image = image
 
     def get_frames_num(self) -> int:
